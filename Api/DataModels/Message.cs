@@ -9,5 +9,7 @@ namespace Api.DataModels
         public string Body { get; set; }
 
         public string Name { get; set; }
+
+        public string GroupName { get; set; }
     }
 }

@@ -1,9 +1,10 @@
-export interface SignalRConnectionInfo {
+export interface ISignalRConnectionInfo {
     url: string;
     accessToken: string;
 }
 
-export class Message {
+export interface IMessage {
     Body: string;
     Name: string;
+    GroupName: string;
 }

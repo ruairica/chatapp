@@ -5,7 +5,7 @@ import * as signalR from '@aspnet/signalr';
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { Subject } from "rxjs";
-import { Message, SignalRConnectionInfo } from "../data-models/signal-r.types";
+import { IMessage, ISignalRConnectionInfo } from "../data-models/signal-r.types";
 
 @Injectable({
     providedIn: 'root'
@@ -16,16 +16,15 @@ export class SignalRService {
     //private readonly _http: HttpClient;
     private readonly _baseUrl: string = "http://localhost:7071/api/";
     private hubConnection: HubConnection;
-    messages: Subject<Message> = new Subject();
+    messages: Subject<IMessage> = new Subject();
 
     constructor(private http: HttpClient) {
 
     }
 
-    private getConnectionInfo(): Observable<SignalRConnectionInfo> {
-        let requestUrl = `/api/negotiate`;
-        return this.http.get<SignalRConnectionInfo>(requestUrl);
-        //return this.http.get<boolean>('/api/HelloWorld');
+    private getConnectionInfo(): Observable<ISignalRConnectionInfo> {
+        let requestUrl = `/api/negotiate/testGroup`;
+        return this.http.get<ISignalRConnectionInfo>(requestUrl);
     }
 
     init() {
@@ -50,9 +49,9 @@ export class SignalRService {
         });
     }
 
-    send(message: string): Observable<void> {
+    send(message: IMessage): Observable<void> {
         let requestUrl = `/api/message`;
-        return this.http.post(requestUrl, message).pipe(map((result: any) => { }));
+        return this.http.post<void>(requestUrl, message);
     }
 
 
