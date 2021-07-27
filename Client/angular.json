@@ -8,7 +8,12 @@
   "projects": {
     "Client": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss",
+          "skipTests": true
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -27,7 +32,7 @@
               "./node_modules/primeicons/primeicons.css",
               "./node_modules/primeng/resources/primeng.min.css",
               "./node_modules/primeflex/primeflex.css",
-              "./node_modules/primeng/resources/themes/arya-blue/theme.css",
+              "./node_modules/primeng/resources/themes/saga-blue/theme.css",
               "src/styles.scss"],
             "scripts": []
           },
@@ -114,11 +119,6 @@
           }
         }
       }
-    }
-  },
-  "schematics": {
-    "@schematics/angular:component": {
-      "styleext": "scss"
     }
   },
   "defaultProject": "Client"

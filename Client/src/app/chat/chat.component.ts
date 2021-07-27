@@ -26,7 +26,7 @@ export class ChatComponent implements OnInit {
   send() {
     console.log('in the send function in chat')
     this.signalRService.send(this.message).subscribe(() => {
-      //this.message = '';
+      this.message = '';
     });
   }
 

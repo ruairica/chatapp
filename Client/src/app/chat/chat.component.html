@@ -1,9 +1,8 @@
-<p>chat works!</p>
-<input type="text" pInputText [(ngModel)]="message"/>
-<button pButton type="button" label="Send" (click)="send()"></button>
-<div>message received : {{ receivedMessage}}</div>
-<div class="p-d-inline-flex">
-    <div>div 1</div>
-    <div>div 2</div>
-    <div>div 2</div>
+<div class="p-d-flex p-jc-center">
+    <div>
+        <p>chat works!</p>
+        <input type="text" pInputText [(ngModel)]="message"/>
+        <button pButton type="button" label="Send" (click)="send()"></button>
+        <div>message received : {{ receivedMessage}}</div>
+    </div>
 </div>
