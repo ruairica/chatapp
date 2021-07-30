@@ -54,6 +54,11 @@ export class SignalRService {
                 console.log(data);
                 this.messages.next(data);
             });
+
+            this.hubConnection.on('newMessage', (data: any) => {
+                console.log(data);
+                this.messages.next(data);
+            });
         });
     }
 

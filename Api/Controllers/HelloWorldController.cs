@@ -8,7 +8,6 @@ using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 using System.IO;
 using System.Text.Json;
 using Newtonsoft.Json;
-using System;
 
 namespace Api.Controllers    
 {
@@ -25,10 +24,11 @@ namespace Api.Controllers
             return new OkObjectResult(true);
         }
 
+
         [FunctionName("negotiate")]
         public async Task<IActionResult> GetSignalRInfo(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "negotiate")] HttpRequest req,
-        [SignalRConnectionInfo(HubName = "NoAuthChat")] SignalRConnectionInfo info)
+          [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "negotiate")] HttpRequest req,
+          [SignalRConnectionInfo(HubName = "NoAuthChat")] SignalRConnectionInfo info)
         {
 
             //UserId = "{headers.x-ms-signalr-userid}"
@@ -38,7 +38,7 @@ namespace Api.Controllers
 
             req.Headers.TryGetValue("x-ms-signalr-userid", out var userId);
 
-            
+
             var t = req.Headers.Values;
 
             var x = userId;
@@ -68,7 +68,7 @@ namespace Api.Controllers
         [FunctionName("message")]
         public async Task<IActionResult> SendMessage(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "message")] HttpRequest req,
-            [SignalR(HubName = "NoAuthChat")]IAsyncCollector<SignalRMessage> signalRMessages)
+            [SignalR(HubName = "NoAuthChat")] IAsyncCollector<SignalRMessage> signalRMessages)
         {
 
             // will be reading this in as an object just // use 
@@ -80,7 +80,7 @@ namespace Api.Controllers
             await signalRMessages.AddAsync(
                 new SignalRMessage
                 {
-                    //GroupName = messageObject.GroupName,
+                    GroupName = messageObject.GroupName,
                     Target = "newMessage",
                     Arguments = new object[] { messageObject }
                 });
