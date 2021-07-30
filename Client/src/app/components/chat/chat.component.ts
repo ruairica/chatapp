@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { IMessage } from '../data-models/signal-r.types';
-import { SignalRService } from '../services/signal-r.service';
+import { Guid } from 'src/app/HelperClasses/guid';
+import { IMessage } from '../../data-models/signal-r.types';
+import { SignalRService } from '../../services/signal-r.service';
 
 @Component({
   selector: 'app-chat',
@@ -11,14 +12,18 @@ export class ChatComponent implements OnInit {
 
   message: string;
   name: string;
+  groupName: string;
   receivedMessage: string = '';
   allMessages: IMessage[] = [];
+  userId: string;
 
-  constructor(private signalRService: SignalRService) { }
+  constructor(private signalRService: SignalRService) {
+    this.userId = Guid.newGuid();
+   }
 
   ngOnInit(): void {
 
-    this.signalRService.init();
+    this.signalRService.init(this.userId);
     this.signalRService.messages.subscribe(message => {
       console.log(message)
       this.receivedMessage = `${message.Name}: ${message.Body}`
@@ -27,16 +32,19 @@ export class ChatComponent implements OnInit {
     });
   }
 
-  send() {
+  sendMessage() {
     console.log('in the send function in chat')
     const request: IMessage = {
       Name: this.name,
       Body: this.message,
-      GroupName: "testGroup"
+      GroupName: this.groupName
     }
     this.signalRService.send(request).subscribe(() => {
       this.message = '';
     });
   }
 
+  joinGroup() {
+    this.signalRService.join(this.groupName, this.userId).subscribe(() => { });
+  }
 }

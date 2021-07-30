@@ -3,9 +3,10 @@ import { HttpClient } from "@angular/common/http";
 import { HubConnection } from '@aspnet/signalr';
 import * as signalR from '@aspnet/signalr';
 import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { environment } from "src/environments/environment";
 import { Subject } from "rxjs";
 import { IMessage, ISignalRConnectionInfo } from "../data-models/signal-r.types";
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable({
     providedIn: 'root'
@@ -14,7 +15,6 @@ import { IMessage, ISignalRConnectionInfo } from "../data-models/signal-r.types"
 export class SignalRService {
 
     //private readonly _http: HttpClient;
-    private readonly _baseUrl: string = "http://localhost:7071/api/";
     private hubConnection: HubConnection;
     messages: Subject<IMessage> = new Subject();
 
@@ -22,15 +22,23 @@ export class SignalRService {
 
     }
 
-    private getConnectionInfo(): Observable<ISignalRConnectionInfo> {
-        let requestUrl = `/api/negotiate/testGroup`;
+    private getConnectionInfo(userId: string): Observable<ISignalRConnectionInfo> {
+        const requestUrl = `${environment.baseUrl}/api/negotiate`;
+
+        const httpOptions = {
+            headers: new HttpHeaders({
+              'Content-Type':  'application/json',
+              'x-ms-signalr-userid': userId
+            })
+          };
+
         return this.http.get<ISignalRConnectionInfo>(requestUrl);
     }
 
-    init() {
+    init(userId: string) {
         console.log(`initializing SignalRService...`);
-        this.getConnectionInfo().subscribe(info => {
-            console.log(`received info for endpoint ${info.url} acces totekn: ${info.accessToken}`);
+        this.getConnectionInfo(userId).subscribe(info => {
+            console.log(`received info for endpoint ${info.url} access token: ${info.accessToken}`);
             let options = {
                 accessTokenFactory: () => info.accessToken
             };
@@ -50,15 +58,20 @@ export class SignalRService {
     }
 
     send(message: IMessage): Observable<void> {
-        let requestUrl = `/api/message`;
+        const requestUrl = `${environment.baseUrl}/api/message`;
         return this.http.post<void>(requestUrl, message);
+
     }
 
+    join(groupName: string, userId: string): Observable<void> {
+        const httpOptions = {
+            headers: new HttpHeaders({
+              'Content-Type':  'application/json',
+              'x-ms-signalr-userid': userId
+            })
+          };
 
-    //    send(message: string): string {
-    //     let requestUrl = `/api/message`;
-    //     return requestUrl;
-    //}
-
-    
+        const requestUrl = `${environment.baseUrl}/api/join/${groupName}`;
+        return this.http.put<void>(requestUrl, {});
+    }
 }

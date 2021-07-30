@@ -6,15 +6,13 @@ import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HelloWorldComponent } from './components/hello-world/hello-world.component';
-import { ChatComponent } from './chat/chat.component';
+import { ChatComponent } from './components/chat/chat.component';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 //primeNG modules
 import {InputTextModule} from 'primeng/inputtext';
 import {ButtonModule} from 'primeng/button';
-
-
 @NgModule({
   declarations: [AppComponent, HelloWorldComponent, ChatComponent],
   imports: [

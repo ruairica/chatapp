@@ -1,0 +1,19 @@
+<div style="width: 100%;" class="p-d-inline-flex p-jc-center">
+    <div style="width: 50rem;">
+        <div class="p-mb-5 p-d-inline-flex p-ai-center">
+            <div>Join a group first:</div>
+            <div><input placeholder="Enter group name" type="text" pInputText [(ngModel)]="groupName"/></div>
+            <div><button pButton type="button" class="p-button-raised p-button-rounded" label="Send" (click)="joinGroup()"></button></div>
+        </div>
+        <div><input placeholder="Name..." type="text" pInputText [(ngModel)]="name"/></div>
+        <div>
+            <input type="text" pInputText [(ngModel)]="message"/>
+            <button pButton type="button" class="p-button-raised p-button-rounded" label="Send" (click)="sendMessage()"></button>
+        </div>
+        <div>message received : {{ receivedMessage}}</div>
+        <div>list of messages:</div>
+        <div *ngFor="let item of this.allMessages">
+            <div>{{ item.Name }} said {{ item.Body }} </div>
+        </div>
+    </div>
+</div>
