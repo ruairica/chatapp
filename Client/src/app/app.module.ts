@@ -13,8 +13,9 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 //primeNG modules
 import {InputTextModule} from 'primeng/inputtext';
 import {ButtonModule} from 'primeng/button';
+import { MessageComponent } from './message/message.component';
 @NgModule({
-  declarations: [AppComponent, HelloWorldComponent, ChatComponent],
+  declarations: [AppComponent, HelloWorldComponent, ChatComponent, MessageComponent],
   imports: [
     BrowserModule,
     HttpClientModule,

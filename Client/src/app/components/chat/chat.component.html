@@ -11,9 +11,10 @@
             <button pButton type="button" class="p-button-raised p-button-rounded" label="Send" (click)="sendMessage()"></button>
         </div>
         <div>message received : {{ receivedMessage}}</div>
-        <div>list of messages:</div>
+        <div class="p-mb-5">list of messages:</div>
         <div *ngFor="let item of this.allMessages">
-            <div>{{ item.Name }} said {{ item.Body }} </div>
+            <app-message [message]="item"></app-message>
         </div>
-    </div>
+        <app-message></app-message>
+    </div>`
 </div>

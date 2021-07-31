@@ -17,27 +17,29 @@ export class SignalRService {
     //private readonly _http: HttpClient;
     private hubConnection: HubConnection;
     messages: Subject<IMessage> = new Subject();
+    httpOptions = {};
 
     constructor(private http: HttpClient) {
 
     }
 
-    private getConnectionInfo(userId: string): Observable<ISignalRConnectionInfo> {
+    private getConnectionInfo(groupName: string): Observable<ISignalRConnectionInfo> {
         const requestUrl = `${environment.baseUrl}/api/negotiate`;
 
-        const httpOptions = {
+        return this.http.get<ISignalRConnectionInfo>(requestUrl, this.httpOptions);
+    }
+
+    init(groupName: string) {
+
+        this.httpOptions = {
             headers: new HttpHeaders({
               'Content-Type':  'application/json',
-              'x-ms-signalr-userid': userId
+              'x-ms-signalr-group': groupName
             })
           };
 
-        return this.http.get<ISignalRConnectionInfo>(requestUrl);
-    }
-
-    init(userId: string) {
         console.log(`initializing SignalRService...`);
-        this.getConnectionInfo(userId).subscribe(info => {
+        this.getConnectionInfo(groupName).subscribe(info => {
             console.log(`received info for endpoint ${info.url} access token: ${info.accessToken}`);
             let options = {
                 accessTokenFactory: () => info.accessToken
@@ -64,19 +66,12 @@ export class SignalRService {
 
     send(message: IMessage): Observable<void> {
         const requestUrl = `${environment.baseUrl}/api/message`;
-        return this.http.post<void>(requestUrl, message);
+        return this.http.post<void>(requestUrl, message, this.httpOptions);
 
     }
 
     join(groupName: string, userId: string): Observable<void> {
-        const httpOptions = {
-            headers: new HttpHeaders({
-              'Content-Type':  'application/json',
-              'x-ms-signalr-userid': userId
-            })
-          };
-
         const requestUrl = `${environment.baseUrl}/api/join/${groupName}`;
-        return this.http.put<void>(requestUrl, {});
+        return this.http.put<void>(requestUrl, {}, this.httpOptions);
     }
 }

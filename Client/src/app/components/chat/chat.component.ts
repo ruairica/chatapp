@@ -18,15 +18,18 @@ export class ChatComponent implements OnInit {
   userId: string;
 
   constructor(private signalRService: SignalRService) {
-    this.userId = Guid.newGuid();
    }
 
   ngOnInit(): void {
 
-    this.signalRService.init(this.userId);
+    //this.joinSignalR();
+  }
+
+  private joinSignalR(groupName: string) {
+    this.signalRService.init(groupName);
     this.signalRService.messages.subscribe(message => {
-      console.log(message)
-      this.receivedMessage = `${message.Name}: ${message.Body}`
+      console.log(message);
+      this.receivedMessage = `${message.Name}: ${message.Body}`;
       //this._snackBar.open(`${message.Name}: ${message.Message}`);
       this.allMessages.push(message);
     });
@@ -45,6 +48,8 @@ export class ChatComponent implements OnInit {
   }
 
   joinGroup() {
-    this.signalRService.join(this.groupName, this.userId).subscribe(() => { });
+    this.joinSignalR(this.groupName);
+
+    // this.signalRService.join(this.groupName, this.userId).subscribe(() => { });
   }
 }

@@ -28,47 +28,16 @@ namespace Api.Controllers
         [FunctionName("negotiate")]
         public async Task<IActionResult> GetSignalRInfo(
           [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "negotiate")] HttpRequest req,
-          [SignalRConnectionInfo(HubName = "NoAuthChat")] SignalRConnectionInfo info)
+          [SignalRConnectionInfo(HubName = "{headers.x-ms-signalr-group}")] SignalRConnectionInfo info)
         {
-
-            //UserId = "{headers.x-ms-signalr-userid}"
-            //check if group exists first when there is a database....
-            //await this.Groups.AddToGroupAsync(this.Context.ConnectionId, chatName);
-            //
-
-            req.Headers.TryGetValue("x-ms-signalr-userid", out var userId);
-
-
-            var t = req.Headers.Values;
-
-            var x = userId;
-
             return new OkObjectResult(info);
         }
 
-        [FunctionName("addToGroup")]
-        public async Task<IActionResult> AddToGroup(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "join/{chatName}")] HttpRequest req, string chatName,
-        [SignalR(HubName = "NoAuthChat")] IAsyncCollector<SignalRGroupAction> signalRGroupActions)
-        {
-
-            if (string.IsNullOrEmpty(chatName) || !req.Headers.TryGetValue("x-ms-signalr-userid", out var userId)) return new OkObjectResult(false);
-
-            await signalRGroupActions.AddAsync(
-                new SignalRGroupAction
-                {
-                    UserId = userId,
-                    GroupName = chatName,
-                    Action = GroupAction.Add
-                });
-
-            return new OkObjectResult(true);
-        }
 
         [FunctionName("message")]
         public async Task<IActionResult> SendMessage(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "message")] HttpRequest req,
-            [SignalR(HubName = "NoAuthChat")] IAsyncCollector<SignalRMessage> signalRMessages)
+            [SignalR(HubName = "{headers.x-ms-signalr-group}")] IAsyncCollector<SignalRMessage> signalRMessages)
         {
 
             // will be reading this in as an object just // use 
@@ -76,11 +45,9 @@ namespace Api.Controllers
 
             var messageObject = JsonConvert.DeserializeObject<DataModels.Message>(requestBody);
 
-
             await signalRMessages.AddAsync(
                 new SignalRMessage
                 {
-                    GroupName = messageObject.GroupName,
                     Target = "newMessage",
                     Arguments = new object[] { messageObject }
                 });
