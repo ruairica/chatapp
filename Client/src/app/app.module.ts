@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { HelloWorldComponent } from './components/hello-world/hello-world.component';
 import { ChatComponent } from './components/chat/chat.component';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -15,7 +14,7 @@ import {InputTextModule} from 'primeng/inputtext';
 import {ButtonModule} from 'primeng/button';
 import { MessageComponent } from './message/message.component';
 @NgModule({
-  declarations: [AppComponent, HelloWorldComponent, ChatComponent, MessageComponent],
+  declarations: [AppComponent, ChatComponent, MessageComponent],
   imports: [
     BrowserModule,
     HttpClientModule,

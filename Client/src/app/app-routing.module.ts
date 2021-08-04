@@ -1,7 +1,5 @@
 import { NgModule, Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { HelloWorldComponent } from './components/hello-world/hello-world.component';
 import { ChatComponent } from './components/chat/chat.component';
 
 const routes: Routes = [
@@ -9,16 +7,12 @@ const routes: Routes = [
     path: '',
     children: [
       {
-        path: 'helloworld',
-        component: HelloWorldComponent,
-      },
-      {
         path: 'chat',
         component: ChatComponent,
       },
       {
         path: '**',
-        redirectTo: '/helloworld'
+        redirectTo: '/chat'
       }
     ]
   }

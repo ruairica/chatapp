@@ -10,7 +10,6 @@
         <div class="p-d-flex p-flex-column p-jc-center" *ngFor="let item of this.allMessages">
             <app-message [message]="item"></app-message>
         </div>
-        <app-message></app-message>
         <div *ngIf="joinedChat">
             <div class="p-mb-1"><input id="name-input" placeholder="Name..." type="text" pInputText [(ngModel)]="name"/></div>
             <div class="p-mb-1"><input type="text" pInputText [(ngModel)]="message"/></div>
