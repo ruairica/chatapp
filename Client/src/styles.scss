@@ -1,12 +1,19 @@
 @import '~primeicons/primeicons'; 
 @import '~primeng/resources/primeng.min'; 
 @import '~primeng/resources/themes/saga-blue/theme';
+@import './app/HelperClasses/colors.scss';
  
 html, body {
     margin: 0;
     padding: 0;
     height: 100%;
     width: 100%;
+
+    color: $black;
   
     font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto;
+
+    .p-button {
+        border: none;
+    }
 }

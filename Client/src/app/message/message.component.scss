@@ -1,6 +1,8 @@
+@import '../HelperClasses/colors.scss';
+
 .message-header {
-    color: #2D2926FF;
-    background-color: #E94B3CFF;
+    color: $black;
+    background-color: $yellow;
     border-radius: 10px;
     z-index: 10;
     padding: 0.25rem 0.5rem;
@@ -11,11 +13,11 @@
 }
 
 .message-container {
-    max-width: 12rem;
+    max-width: 11rem;
     word-wrap: break-word;
     border-radius: 5px;
-    color: #E94B3CFF;
-    background-color: #2D2926FF;
+    color: $black;
+    background-color: $gray;
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
 }

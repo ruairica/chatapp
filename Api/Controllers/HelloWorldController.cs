@@ -45,7 +45,7 @@ namespace Api.Controllers
 
             var messageObject = JsonConvert.DeserializeObject<DataModels.Message>(requestBody);
 
-            await signalRMessages.AddAsync(
+            await signalRMessages.AddAsync( 
                 new SignalRMessage
                 {
                     Target = "newMessage",

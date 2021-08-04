@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Guid } from 'src/app/HelperClasses/guid';
 import { IMessage } from '../../data-models/signal-r.types';
 import { SignalRService } from '../../services/signal-r.service';
@@ -13,9 +13,9 @@ export class ChatComponent implements OnInit {
   message: string;
   name: string;
   groupName: string;
-  receivedMessage: string = '';
   allMessages: IMessage[] = [];
   userId: string;
+  joinedChat = false;
 
   constructor(private signalRService: SignalRService) {
    }
@@ -29,8 +29,6 @@ export class ChatComponent implements OnInit {
     this.signalRService.init(groupName);
     this.signalRService.messages.subscribe(message => {
       console.log(message);
-      this.receivedMessage = `${message.Name}: ${message.Body}`;
-      //this._snackBar.open(`${message.Name}: ${message.Message}`);
       this.allMessages.push(message);
     });
   }
@@ -42,14 +40,19 @@ export class ChatComponent implements OnInit {
       Body: this.message,
       GroupName: this.groupName
     }
-    this.signalRService.send(request).subscribe(() => {
-      this.message = '';
-    });
+
+    if (request.Body && request.Name) {
+      this.signalRService.send(request).subscribe(() => {
+        this.message = '';
+      });
+    }
   }
 
   joinGroup() {
-    this.joinSignalR(this.groupName);
-
+    if (this.groupName){
+      this.joinSignalR(this.groupName);
+      this.joinedChat = true;
+    }
     // this.signalRService.join(this.groupName, this.userId).subscribe(() => { });
   }
 }

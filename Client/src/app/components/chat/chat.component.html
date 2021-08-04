@@ -1,20 +1,20 @@
-<div style="width: 100%;" class="p-d-inline-flex p-jc-center">
-    <div style="width: 50rem;">
-        <div class="p-mb-5 p-d-inline-flex p-ai-center">
-            <div>Join a group first:</div>
-            <div><input placeholder="Enter group name" type="text" pInputText [(ngModel)]="groupName"/></div>
-            <div><button pButton type="button" class="p-button-raised p-button-rounded" label="Send" (click)="joinGroup()"></button></div>
+<div style="width: 100vw;" class="p-d-flex p-jc-center p-mt-3">
+    <div class="p-d-flex p-flex-column p-jc-center">
+        <div class="p-mb-5">
+            <div class="p-d-inline-flex p-ai-center">
+                <input id="group-input" placeholder="Join group" type="text" pInputText [(ngModel)]="groupName"/>
+                <button pButton type="button" label="Join" id="join-group" (click)="joinGroup()"></button>
+            </div>
         </div>
-        <div><input placeholder="Name..." type="text" pInputText [(ngModel)]="name"/></div>
-        <div>
-            <input type="text" pInputText [(ngModel)]="message"/>
-            <button pButton type="button" class="p-button-raised p-button-rounded" label="Send" (click)="sendMessage()"></button>
-        </div>
-        <div>message received : {{ receivedMessage}}</div>
-        <div class="p-mb-5">list of messages:</div>
-        <div *ngFor="let item of this.allMessages">
+
+        <div class="p-d-flex p-flex-column p-jc-center" *ngFor="let item of this.allMessages">
             <app-message [message]="item"></app-message>
         </div>
         <app-message></app-message>
+        <div *ngIf="joinedChat">
+            <div class="p-mb-1"><input id="name-input" placeholder="Name..." type="text" pInputText [(ngModel)]="name"/></div>
+            <div class="p-mb-1"><input type="text" pInputText [(ngModel)]="message"/></div>
+            <div class="p-mb-1"><button pButton type="button" class="p-button-raised p-button-rounded sendButton" label="Send" (click)="sendMessage()"></button></div>
+        </div>
     </div>`
 </div>
