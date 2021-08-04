@@ -52,6 +52,7 @@ export class ChatComponent implements OnInit {
     if (this.groupName){
       this.joinSignalR(this.groupName);
       this.joinedChat = true;
+      this.allMessages = [];
     }
     // this.signalRService.join(this.groupName, this.userId).subscribe(() => { });
   }
