@@ -16,4 +16,19 @@ html, body {
     .p-button {
         border: none;
     }
+
+    .body-text {
+        font-size: 1rem;
+        font-weight: 500;
+    }
+
+    a {
+        color: #0362fc;
+        text-decoration: underline;
+    }
+
+    a:visited {
+        color: #0362fc;
+        text-decoration: underline;
+    }
 }

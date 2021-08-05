@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { IMessage } from '../data-models/signal-r.types';
+import { IMessage } from '../../data-models/signal-r.types';
 
 @Component({
   selector: 'app-message',

@@ -1,19 +1,19 @@
 <div style="width: 100vw;" class="p-d-flex p-jc-center p-mt-3">
     <div class="p-d-flex p-flex-column p-jc-center">
-        <div class="p-mb-5">
-            <div class="p-d-inline-flex p-ai-center">
-                <input id="group-input" placeholder="Join group" type="text" pInputText [(ngModel)]="groupName"/>
-                <button pButton type="button" label="Join" id="join-group" (click)="joinGroup()"></button>
-            </div>
+        <a class="body-text center-text" routerLink="/chat">Home</a>
+        <h4 class="center-text">Chat name: {{ groupName }}</h4>
+        <h4 *ngIf="hasNickName" class="center-text">Hi {{ nickName}}</h4>
+        <div *ngIf="!hasNickName" class="p-mb-1 p-mt-6">
+            <div class="p-mb-3 body-text center-text">Choose a nickname<br>(It's only for this group)</div>
+            <input placeholder="Name..." type="text" class="name-input" pInputText (keydown.enter)="confirmName()" [(ngModel)]="name"/>
+            <div class="p-mt-1"><button pButton type="button" class="p-button-raised p-button-rounded nameButton" label="Go" (click)="confirmName()"></button></div>
         </div>
-
-        <div class="p-d-flex p-flex-column p-jc-center" *ngFor="let item of this.allMessages">
+        <div class="p-mt-6 p-d-flex p-flex-column p-jc-center" *ngFor="let item of this.allMessages">
             <app-message [message]="item"></app-message>
         </div>
-        <div *ngIf="joinedChat">
-            <div class="p-mb-1"><input id="name-input" placeholder="Name..." type="text" pInputText [(ngModel)]="name"/></div>
+        <div *ngIf="hasNickName">
             <div class="p-mb-1"><input type="text" pInputText [(ngModel)]="message"/></div>
             <div class="p-mb-1"><button pButton type="button" class="p-button-raised p-button-rounded sendButton" label="Send" (click)="sendMessage()"></button></div>
         </div>
-    </div>`
+    </div>
 </div>

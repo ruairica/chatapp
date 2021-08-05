@@ -1,4 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Guid } from 'src/app/HelperClasses/guid';
 import { IMessage } from '../../data-models/signal-r.types';
 import { SignalRService } from '../../services/signal-r.service';
@@ -11,18 +12,29 @@ import { SignalRService } from '../../services/signal-r.service';
 export class ChatComponent implements OnInit {
 
   message: string;
-  name: string;
+  nickName: string;
   groupName: string;
   allMessages: IMessage[] = [];
-  userId: string;
   joinedChat = false;
+  name: string;
+  hasNickName = false
 
-  constructor(private signalRService: SignalRService) {
+  constructor(private signalRService: SignalRService, private router: Router, private route: ActivatedRoute) {
    }
 
   ngOnInit(): void {
 
-    //this.joinSignalR();
+    this.groupName = this.route.snapshot.paramMap.get('chatName');
+    this.nickName = localStorage.getItem(this.groupName ?? '');
+
+    if(this.nickName) {
+      this.hasNickName = true;
+    }
+
+    if (this.groupName && this.hasNickName) {
+      this.joinSignalR(this.groupName);
+      this.allMessages = [];
+    } 
   }
 
   private joinSignalR(groupName: string) {
@@ -33,27 +45,32 @@ export class ChatComponent implements OnInit {
     });
   }
 
+  confirmName() {
+    if (this.name) {
+      this.nickName = this.name;
+      localStorage.setItem(this.groupName, this.nickName);
+      this.hasNickName = true;
+    }
+
+    if (this.groupName && this.hasNickName) {
+      this.joinSignalR(this.groupName);
+      this.allMessages = [];
+    } 
+  }
+
   sendMessage() {
     console.log('in the send function in chat')
     const request: IMessage = {
-      Name: this.name,
+      Name: this.nickName,
       Body: this.message,
       GroupName: this.groupName
     }
 
+    console.log(JSON.stringify(request))
     if (request.Body && request.Name) {
       this.signalRService.send(request).subscribe(() => {
         this.message = '';
       });
     }
-  }
-
-  joinGroup() {
-    if (this.groupName){
-      this.joinSignalR(this.groupName);
-      this.joinedChat = true;
-      this.allMessages = [];
-    }
-    // this.signalRService.join(this.groupName, this.userId).subscribe(() => { });
   }
 }

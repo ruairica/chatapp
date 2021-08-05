@@ -1,0 +1,26 @@
+@import '../../HelperClasses/colors.scss';
+
+:host ::ng-deep {
+    .p-button.home {
+        width: 100%;
+        background-color: $blue;
+        border: none;
+    }
+
+    .p-button.joinChatButton {
+        width: 100%;
+        background-color: $yellow;
+        color: $black;
+        font-weight: 500;
+    }
+
+    .p-inputtext.joinChat-input {
+        border-radius: 8px;
+    }
+
+}
+
+.menu-container {
+    width: 13rem;
+    text-align: center;
+}

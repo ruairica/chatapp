@@ -1,0 +1,21 @@
+<div style="width: 100vw;" class="p-d-flex p-jc-center p-mt-3">
+    <div class="p-d-flex p-flex-column p-jc-center menu-container">
+        <div class="p-mt-6 p-mb-4">
+            <h1>Fast chat</h1>
+            <h3>quick, anonymous, disposable, group chats</h3>
+        </div>
+        <div *ngIf="!joiningChat">
+            <div>
+                <button pButton type="button" class="p-button-raised p-button-rounded home" label="Create a chat" (click)="createChat()"></button>
+            </div>
+            <div class="p-mt-6">
+                <button pButton type="button" class="p-button-raised p-button-rounded home" label="Join a chat" (click)="joinAGroup()"></button>
+            </div>
+        </div>
+        <div *ngIf="joiningChat">
+            <div class="p-mb-3 body-text center-text">Enter the chat name</div>
+            <input placeholder="Name..." type="text" class="joinChat-input" pInputText (keydown.enter)="joinChat()" [(ngModel)]="joinGroupName"/>
+            <div class="p-mt-1"><button pButton type="button" class="p-button-raised p-button-rounded joinChatButton" label="Join" (click)="joinChat()"></button></div>
+        </div>
+    </div>
+</div>

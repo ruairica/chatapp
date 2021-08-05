@@ -4,11 +4,21 @@
     .p-button.sendButton {
         width: 100%;
         background-color: $blue;
-        border: none;
+    }
+
+    .p-button.nameButton {
+        width: 100%;
+        background-color: $yellow;
+        color: $black;
+        font-weight: 500;
     }
 
     .p-inputtext#group-input {
         width: 50%;
+    }
+
+    .p-inputtext.name-input {
+        border-radius: 8px;
     }
 
 
@@ -17,6 +27,10 @@
         background-color: $navy;
         margin-left: 0.1rem;
         height: 100%;
+    }
+
+    .center-text {
+        text-align: center;
     }
 
 }
