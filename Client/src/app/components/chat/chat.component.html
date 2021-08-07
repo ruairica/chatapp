@@ -13,7 +13,7 @@
         </div>
         <div *ngIf="hasNickName">
             <div class="p-mb-1"><input type="text" pInputText [(ngModel)]="message"/></div>
-            <div class="p-mb-1"><button pButton type="button" class="p-button-raised p-button-rounded sendButton" label="Send" (click)="sendMessage()"></button></div>
+            <div class="p-mb-1"><button pButton type="button" (keydown.enter)="sendMessage()" class="p-button-raised p-button-rounded sendButton" label="Send" (click)="sendMessage()"></button></div>
         </div>
     </div>
 </div>
