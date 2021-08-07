@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Api.DataModels
 {
-    public class Message
+    public class MessageResponse
     {
         [JsonProperty("id")]
         public string Id { get; set; }
@@ -19,6 +19,10 @@ namespace Api.DataModels
         [JsonProperty("chatName")]
         public string ChatName { get; set; }
 
-        public DateTime TimeStamp { get; set; }
+        [JsonProperty("timeStamp")]
+        public double TimeStamp { internal get; set; }
+
+        [JsonProperty("messageTime")]
+        public DateTime MessageTime => DateTime.FromOADate(TimeStamp);
     }
 }

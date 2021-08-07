@@ -4,7 +4,8 @@ export interface ISignalRConnectionInfo {
 }
 
 export interface IMessage {
-    Body: string;
-    NickName: string;
-    ChatName?: string;
+    body: string;
+    nickName: string;
+    chatName?: string;
+    messageTime?: Date;
 }

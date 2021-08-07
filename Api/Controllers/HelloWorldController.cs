@@ -44,7 +44,7 @@ namespace Api.Controllers
             // will be reading this in as an object just // use 
             var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
-            var messageObject = JsonConvert.DeserializeObject<DataModels.Message>(requestBody);
+            var messageObject = JsonConvert.DeserializeObject<MessageRequest>(requestBody);
 
             await signalRMessages.AddAsync(  
                 new SignalRMessage
@@ -63,8 +63,8 @@ namespace Api.Controllers
                 databaseName: "Messages",
                 collectionName: "MessagesContainer",
                 ConnectionStringSetting = "CosmoDB_ConnectionString",
-                Id = "1",
-                PartitionKey = "abcd")] List<Message> message)
+                Id = "eff1b672-5eb1-4d31-a505-07056f2a91c5",
+                PartitionKey = "abcd")] MessageResponse message)
         {
 
             // will be reading this in as an object just // use 
@@ -82,18 +82,13 @@ namespace Api.Controllers
                 databaseName: "Messages",
                 collectionName: "MessagesContainer",
                 ConnectionStringSetting = "CosmoDB_ConnectionString",
-                CreateIfNotExists = true)] IAsyncCollector<Message> documentOut)
+                CreateIfNotExists = true)] IAsyncCollector<MessageRequest> documentOut)
         {
-
-            // will be reading this in as an object just // use 
-            //var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            //var messageObject = JsonConvert.DeserializeObject<DataModels.Message>(requestBody);
-            var messageObject = new Message
-            { 
+            var messageObject = new MessageRequest
+            {
                 NickName = "hi there",
                 ChatName = "abcd",
-                Body = "heres the message",
-                TimeStamp = DateTime.UtcNow
+                Body = "heres the message"
             };
 
             await documentOut.AddAsync(messageObject);
@@ -112,7 +107,7 @@ namespace Api.Controllers
         {
             Uri collectionUri = UriFactory.CreateDocumentCollectionUri("Messages", "MessagesContainer");
 
-            var response =  client.CreateDocumentQuery<Message>(collectionUri, "SELECT * FROM MessagesContainer c WHERE c.chatName = 'abcd'").ToList();
+            var response =  client.CreateDocumentQuery<MessageResponse>(collectionUri, "SELECT * FROM MessagesContainer c WHERE c.chatName = 'abcd' ORDER BY c.timeStamp ASC").ToList();
 
             return new OkObjectResult(true);
         }
