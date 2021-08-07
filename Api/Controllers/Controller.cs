@@ -17,14 +17,12 @@ using System.Linq;
 
 namespace Api.Controllers    
 {
-    public class HelloWorldController : ServerlessHub
+    public class Controller : ServerlessHub
     {
-        private readonly string cosmoDB_ConnectionString;
-
-        public HelloWorldController()
-        {
-            this.cosmoDB_ConnectionString = Environment.GetEnvironmentVariable("CosmoDB_ConnectionString");
-        }
+        // createGroup function (should generate the group name, insert first row, return groupname)
+        // negotiate, (fine as is)
+        // Get messages (build out and add functionality for "load more")
+        // Send messasge, add insert to datebase.
 
         [FunctionName("negotiate")]
         public async Task<IActionResult> GetSignalRInfo(
