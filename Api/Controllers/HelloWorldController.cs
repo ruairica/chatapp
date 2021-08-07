@@ -9,6 +9,11 @@ using System.IO;
 using System.Text.Json;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using Api.DataModels;
+using Microsoft.Azure.Documents.Client;
+using Microsoft.Azure.Documents.Linq;
+using System.Linq;
 
 namespace Api.Controllers    
 {
@@ -51,20 +56,20 @@ namespace Api.Controllers
             return new OkResult();
         }
 
-        [FunctionName("GetMessages")]
-        public async Task<IActionResult> GetMessages(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetMessages")] HttpRequest req,
+        [FunctionName("GetMessage")]
+        public async Task<IActionResult> GetMessage(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetMessage")] HttpRequest req,
             [CosmosDB(
                 databaseName: "Messages",
                 collectionName: "MessagesContainer",
                 ConnectionStringSetting = "CosmoDB_ConnectionString",
                 Id = "1",
-                PartitionKey = "abcd")] DataModels.Message message)
+                PartitionKey = "abcd")] List<Message> message)
         {
 
             // will be reading this in as an object just // use 
             //var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            //var messageObject = JsonConvert.DeserializeObject<DataModels.Message>(requestBody);
+            //var messageObject = JsonConvert.DeserializeObject<DataModels.Message>(requestBody);  Id = "ab085072-e062-4e0f-8bf9-c15966e8a2d9",
 
 
             return new OkObjectResult(message);
@@ -76,24 +81,40 @@ namespace Api.Controllers
         [CosmosDB(
                 databaseName: "Messages",
                 collectionName: "MessagesContainer",
-                ConnectionStringSetting = "CosmoDB_ConnectionString")] IAsyncCollector<DataModels.Message> documentOut)
+                ConnectionStringSetting = "CosmoDB_ConnectionString",
+                CreateIfNotExists = true)] IAsyncCollector<Message> documentOut)
         {
 
             // will be reading this in as an object just // use 
             //var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             //var messageObject = JsonConvert.DeserializeObject<DataModels.Message>(requestBody);
-            var messageObject = new DataModels.Message
+            var messageObject = new Message
             { 
-                Id = Guid.NewGuid().ToString(),
-                NickName = "fromCode",
+                NickName = "hi there",
                 ChatName = "abcd",
                 Body = "heres the message",
+                TimeStamp = DateTime.UtcNow
             };
 
             await documentOut.AddAsync(messageObject);
 
 
             return new OkResult();
+        }
+
+        [FunctionName("GetMessages")]
+        public async Task<IActionResult> GetMessages(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetMessages/{chatName}")] HttpRequest req,
+        [CosmosDB(
+                databaseName: "Messages",
+                collectionName: "MessagesContainer",
+                ConnectionStringSetting = "CosmoDB_ConnectionString")] DocumentClient client)
+        {
+            Uri collectionUri = UriFactory.CreateDocumentCollectionUri("Messages", "MessagesContainer");
+
+            var response =  client.CreateDocumentQuery<Message>(collectionUri, "SELECT * FROM MessagesContainer c WHERE c.chatName = 'abcd'").ToList();
+
+            return new OkObjectResult(true);
         }
 
 
