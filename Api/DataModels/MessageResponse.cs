@@ -20,7 +20,7 @@ namespace Api.DataModels
         public string ChatName { get; set; }
 
         [JsonProperty("timeStamp")]
-        public double TimeStamp { internal get; set; }
+        public double TimeStamp { get; set; }
 
         [JsonProperty("messageTime")]
         public DateTime MessageTime => DateTime.FromOADate(TimeStamp);
