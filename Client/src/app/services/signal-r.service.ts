@@ -1,11 +1,11 @@
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { HubConnection } from '@aspnet/signalr';
 import * as signalR from '@aspnet/signalr';
-import { Observable } from "rxjs";
-import { environment } from "src/environments/environment";
-import { Subject } from "rxjs";
-import { IMessage, ISignalRConnectionInfo } from "../data-models/signal-r.types";
+import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { Subject } from 'rxjs';
+import { IMessage, ISignalRConnectionInfo } from '../data-models/signal-r.types';
 import { HttpHeaders } from '@angular/common/http';
 
 @Injectable({
@@ -14,7 +14,7 @@ import { HttpHeaders } from '@angular/common/http';
 
 export class SignalRService {
 
-    //private readonly _http: HttpClient;
+    // private readonly _http: HttpClient;
     private hubConnection: HubConnection;
     messages: Subject<IMessage> = new Subject();
     httpOptions = {};
@@ -41,7 +41,7 @@ export class SignalRService {
         console.log(`initializing SignalRService...`);
         this.getConnectionInfo(groupName).subscribe(info => {
             console.log(`received info for endpoint ${info.url} access token: ${info.accessToken}`);
-            let options = {
+            const options = {
                 accessTokenFactory: () => info.accessToken
             };
 

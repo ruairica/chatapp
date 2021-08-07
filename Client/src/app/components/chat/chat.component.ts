@@ -17,7 +17,7 @@ export class ChatComponent implements OnInit {
   allMessages: IMessage[] = [];
   joinedChat = false;
   name: string;
-  hasNickName = false
+  hasNickName = false;
 
   constructor(private signalRService: SignalRService, private router: Router, private route: ActivatedRoute) {
    }
@@ -27,14 +27,14 @@ export class ChatComponent implements OnInit {
     this.groupName = this.route.snapshot.paramMap.get('chatName');
     this.nickName = localStorage.getItem(this.groupName ?? '');
 
-    if(this.nickName) {
+    if (this.nickName) {
       this.hasNickName = true;
     }
 
     if (this.groupName && this.hasNickName) {
       this.joinSignalR(this.groupName);
       this.allMessages = [];
-    } 
+    }
   }
 
   private joinSignalR(groupName: string) {
@@ -55,18 +55,18 @@ export class ChatComponent implements OnInit {
     if (this.groupName && this.hasNickName) {
       this.joinSignalR(this.groupName);
       this.allMessages = [];
-    } 
+    }
   }
 
   sendMessage() {
-    console.log('in the send function in chat')
+    console.log('in the send function in chat');
     const request: IMessage = {
       nickName: this.nickName,
       body: this.message,
       chatName: this.groupName
-    }
+    };
 
-    console.log(JSON.stringify(request))
+    console.log(JSON.stringify(request));
     if (request.body && request.nickName) {
       this.signalRService.send(request).subscribe(() => {
         this.message = '';
