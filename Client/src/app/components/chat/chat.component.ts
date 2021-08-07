@@ -61,13 +61,13 @@ export class ChatComponent implements OnInit {
   sendMessage() {
     console.log('in the send function in chat')
     const request: IMessage = {
-      Name: this.nickName,
+      NickName: this.nickName,
       Body: this.message,
-      GroupName: this.groupName
+      ChatName: this.groupName
     }
 
     console.log(JSON.stringify(request))
-    if (request.Body && request.Name) {
+    if (request.Body && request.NickName) {
       this.signalRService.send(request).subscribe(() => {
         this.message = '';
       });

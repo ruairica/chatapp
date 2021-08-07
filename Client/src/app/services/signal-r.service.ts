@@ -52,11 +52,6 @@ export class SignalRService {
 
             this.hubConnection.start().catch(err => console.error(err.toString()));
 
-            this.hubConnection.on('notify', (data: any) => {
-                console.log(data);
-                this.messages.next(data);
-            });
-
             this.hubConnection.on('newMessage', (data: any) => {
                 console.log(data);
                 this.messages.next(data);
@@ -68,10 +63,5 @@ export class SignalRService {
         const requestUrl = `${environment.baseUrl}/api/message`;
         return this.http.post<void>(requestUrl, message, this.httpOptions);
 
-    }
-
-    join(groupName: string, userId: string): Observable<void> {
-        const requestUrl = `${environment.baseUrl}/api/join/${groupName}`;
-        return this.http.put<void>(requestUrl, {}, this.httpOptions);
     }
 }

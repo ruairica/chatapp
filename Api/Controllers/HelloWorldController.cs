@@ -8,22 +8,18 @@ using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 using System.IO;
 using System.Text.Json;
 using Newtonsoft.Json;
+using System;
 
 namespace Api.Controllers    
 {
     public class HelloWorldController : ServerlessHub
     {
+        private readonly string cosmoDB_ConnectionString;
 
-        [FunctionName("HelloWorldFunction")]
-        public async Task<IActionResult> HelloWorldFunction(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "HelloWorld")] HttpRequest req,
-            ILogger log)
+        public HelloWorldController()
         {
-            // this.Groups.AddToGroupAsync(this.);
-            log.LogInformation("I'm in the the function!");
-            return new OkObjectResult(true);
+            this.cosmoDB_ConnectionString = Environment.GetEnvironmentVariable("CosmoDB_ConnectionString");
         }
-
 
         [FunctionName("negotiate")]
         public async Task<IActionResult> GetSignalRInfo(
@@ -45,7 +41,7 @@ namespace Api.Controllers
 
             var messageObject = JsonConvert.DeserializeObject<DataModels.Message>(requestBody);
 
-            await signalRMessages.AddAsync( 
+            await signalRMessages.AddAsync(  
                 new SignalRMessage
                 {
                     Target = "newMessage",
@@ -54,5 +50,52 @@ namespace Api.Controllers
 
             return new OkResult();
         }
+
+        [FunctionName("GetMessages")]
+        public async Task<IActionResult> GetMessages(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetMessages")] HttpRequest req,
+            [CosmosDB(
+                databaseName: "Messages",
+                collectionName: "MessagesContainer",
+                ConnectionStringSetting = "CosmoDB_ConnectionString",
+                Id = "1",
+                PartitionKey = "abcd")] DataModels.Message message)
+        {
+
+            // will be reading this in as an object just // use 
+            //var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            //var messageObject = JsonConvert.DeserializeObject<DataModels.Message>(requestBody);
+
+
+            return new OkObjectResult(message);
+        }
+
+        [FunctionName("PostMessages")]
+        public async Task<IActionResult> PostMessage(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "PostMessage")] HttpRequest req,
+        [CosmosDB(
+                databaseName: "Messages",
+                collectionName: "MessagesContainer",
+                ConnectionStringSetting = "CosmoDB_ConnectionString")] IAsyncCollector<DataModels.Message> documentOut)
+        {
+
+            // will be reading this in as an object just // use 
+            //var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            //var messageObject = JsonConvert.DeserializeObject<DataModels.Message>(requestBody);
+            var messageObject = new DataModels.Message
+            { 
+                Id = Guid.NewGuid().ToString(),
+                NickName = "fromCode",
+                ChatName = "abcd",
+                Body = "heres the message",
+            };
+
+            await documentOut.AddAsync(messageObject);
+
+
+            return new OkResult();
+        }
+
+
     }
 }

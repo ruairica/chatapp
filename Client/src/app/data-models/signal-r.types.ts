@@ -5,6 +5,6 @@ export interface ISignalRConnectionInfo {
 
 export interface IMessage {
     Body: string;
-    Name: string;
-    GroupName?: string;
+    NickName: string;
+    ChatName?: string;
 }

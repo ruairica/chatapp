@@ -14,7 +14,7 @@ export class MessageComponent implements OnInit {
 
   ngOnInit(): void {
     if(!this.message) {
-      this.message = { Name: 'Ruairi', Body: 'this is the body of the messageis the body of the messageis the body of the messageis the body of the message'};
+      this.message = { NickName: 'Ruairi', Body: 'this is the body of the messageis the body of the messageis the body of the messageis the body of the message'};
     }
   }
 
