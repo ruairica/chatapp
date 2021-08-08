@@ -1,6 +1,10 @@
 @import '../../HelperClasses/colors.scss';
 
 :host ::ng-deep {
+
+    .p-button.header-button {
+        width: 10rem;
+    }
     .p-button.sendButton {
         width: 12rem;
         background-color: $blue;

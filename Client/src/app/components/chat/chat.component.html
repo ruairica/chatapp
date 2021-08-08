@@ -1,10 +1,10 @@
 <div class="container">
     <div class="header">
-        <div class="p-d-flex p-jc-center">
-            <button pButton type="button" label="Home" [routerLink]="'/chat'"></button>
-            <button pButton type="button" label="Load more" (click)="loadMessages()"></button>
+        <div class="p-d-flex p-jc-center p-mt-2">
+            <button pButton type="button" class="p-mr-3 header-button" icon="pi pi-arrow-left" iconPos="left" label="Home" [routerLink]="'/chat'"></button>
+            <button pButton type="button" label="Load more" class="header-button" icon="pi pi-arrow-up" iconPos="right" (click)="scrollToBottomMessage()"></button>
         </div>
-        <h4 *ngIf="hasNickName" class="center-text">Chat name: {{ groupName }}</h4>
+        <div *ngIf="hasNickName" class="body-text center-text p-mt-1">Chat name: {{ groupName }}</div>
     </div>
     <div class="body">
         <div class="p-d-flex p-jc-center">
@@ -20,6 +20,7 @@
                         <app-message [message]="item"></app-message>
                     </div>
                 </div>
+                <div class="bottomMessage"></div>
             </div>
         </div>
     </div>

@@ -23,7 +23,8 @@ export class ChatComponent implements OnInit {
   constructor(private signalRService: SignalRService,
               private router: Router,
               private route: ActivatedRoute,
-              private messagingService: MessagingService) {
+              private messagingService: MessagingService,
+              private el: ElementRef) {
    }
 
   ngOnInit(): void {
@@ -91,5 +92,9 @@ export class ChatComponent implements OnInit {
       console.log(message);
       this.allMessages.push(message);
     });
+  }
+
+  scrollToBottomMessage() {
+    this.el.nativeElement.querySelector('.bottomMessage').scrollIntoView();
   }
 }
