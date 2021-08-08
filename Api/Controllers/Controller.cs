@@ -19,78 +19,36 @@ namespace Api.Controllers
 {
     public class Controller : ServerlessHub
     {
-        // createGroup function (should generate the group name, insert first row, return groupname)
-        // negotiate, (fine as is)
-        // Get messages (build out and add functionality for "load more")
-        // Send messasge, add insert to datebase.
-
         [FunctionName("negotiate")]
         public async Task<IActionResult> GetSignalRInfo(
           [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "negotiate")] HttpRequest req,
           [SignalRConnectionInfo(HubName = "{headers.x-ms-signalr-group}")] SignalRConnectionInfo info)
         {
+            //possibly do the check if exists check here instead.
             return new OkObjectResult(info);
         }
 
-
-        [FunctionName("message")]
-        public async Task<IActionResult> SendMessage(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "message")] HttpRequest req,
-            [SignalR(HubName = "{headers.x-ms-signalr-group}")] IAsyncCollector<SignalRMessage> signalRMessages)
+        [FunctionName("PostMessages")]
+        public async Task<IActionResult> PostMessage(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "PostMessage/{chatName}")] HttpRequest req,
+        [CosmosDB(
+                databaseName: "Messages",
+                collectionName: "MessagesContainer",
+                ConnectionStringSetting = "CosmoDB_ConnectionString",
+                CreateIfNotExists = true)] IAsyncCollector<MessageRequest> documentOut,
+        [SignalR(HubName = "{chatName}")] IAsyncCollector<SignalRMessage> signalRMessages)
         {
-
-            // will be reading this in as an object just // use 
             var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-
             var messageObject = JsonConvert.DeserializeObject<MessageRequest>(requestBody);
 
-            await signalRMessages.AddAsync(  
+            await signalRMessages.AddAsync(
                 new SignalRMessage
                 {
                     Target = "newMessage",
                     Arguments = new object[] { messageObject }
                 });
 
-            return new OkResult();
-        }
-
-        [FunctionName("GetMessage")]
-        public async Task<IActionResult> GetMessage(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetMessage")] HttpRequest req,
-            [CosmosDB(
-                databaseName: "Messages",
-                collectionName: "MessagesContainer",
-                ConnectionStringSetting = "CosmoDB_ConnectionString",
-                Id = "eff1b672-5eb1-4d31-a505-07056f2a91c5",
-                PartitionKey = "abcd")] MessageResponse message)
-        {
-
-            // will be reading this in as an object just // use 
-            //var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            //var messageObject = JsonConvert.DeserializeObject<DataModels.Message>(requestBody);  Id = "ab085072-e062-4e0f-8bf9-c15966e8a2d9",
-
-
-            return new OkObjectResult(message);
-        }
-
-        [FunctionName("PostMessages")]
-        public async Task<IActionResult> PostMessage(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "PostMessage")] HttpRequest req,
-        [CosmosDB(
-                databaseName: "Messages",
-                collectionName: "MessagesContainer",
-                ConnectionStringSetting = "CosmoDB_ConnectionString",
-                CreateIfNotExists = true)] IAsyncCollector<MessageRequest> documentOut)
-        {
-            var messageObject = new MessageRequest
-            {
-                NickName = "hi there",
-                ChatName = "abcd",
-                Body = "heres the message"
-            };
-
             await documentOut.AddAsync(messageObject);
-
 
             return new OkResult();
         }
@@ -98,6 +56,7 @@ namespace Api.Controllers
         [FunctionName("GetMessages")]
         public async Task<IActionResult> GetMessages(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "GetMessages/{chatName}")] HttpRequest req,
+        string chatName,
         [CosmosDB(
                 databaseName: "Messages",
                 collectionName: "MessagesContainer",
@@ -105,11 +64,63 @@ namespace Api.Controllers
         {
             Uri collectionUri = UriFactory.CreateDocumentCollectionUri("Messages", "MessagesContainer");
 
-            var response =  client.CreateDocumentQuery<MessageResponse>(collectionUri, "SELECT * FROM MessagesContainer c WHERE c.chatName = 'abcd' ORDER BY c.timeStamp ASC").ToList();
+            var query = $"SELECT TOP 5 * FROM MessagesContainer c WHERE c.chatName = '{chatName.ToLower()}' ";
 
-            return new OkObjectResult(true);
+            if (double.TryParse(req.Query["timeStamp"], out var timestamp))
+            {
+                query += $"AND c.timeStamp < {timestamp} ORDER BY c.timeStamp DESC";
+            }
+            else
+            {
+                query += "ORDER BY c.timeStamp DESC";
+            }
+
+            var messages = client.CreateDocumentQuery<MessageResponse>(collectionUri, query).ToList();
+            messages.Reverse();
+
+            return new OkObjectResult(messages);
         }
 
+        [FunctionName("CreateGroup")]
+        public async Task<IActionResult> CreateGroup(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "CreateGroup")] HttpRequest req,
+        [CosmosDB(
+                databaseName: "Messages",
+                collectionName: "MessagesContainer",
+                ConnectionStringSetting = "CosmoDB_ConnectionString",
+                CreateIfNotExists = true)] IAsyncCollector<MessageRequest> documentOut)
+        {
+            var chatName = this.CreateChatName();
+            // TODO: Add validation to ensure group does not already exist.
+
+            var messageObject = new MessageRequest
+            {
+                NickName = string.Empty,
+                ChatName = chatName,
+                Body = $"This is the beginning of {chatName}"
+            };
+
+            await documentOut.AddAsync(messageObject);
+
+            return new OkObjectResult(new Chat { ChatName = chatName });
+        }
+
+        [FunctionName("ChatExists")]
+        public async Task<IActionResult> ChatExists(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "ChatExists/{chatName}")] HttpRequest req,
+        string chatName,
+        [CosmosDB(
+                databaseName: "Messages",
+                collectionName: "MessagesContainer",
+                ConnectionStringSetting = "CosmoDB_ConnectionString")] DocumentClient client)
+        {
+            Uri collectionUri = UriFactory.CreateDocumentCollectionUri("Messages", "MessagesContainer");
+            var response = client.CreateDocumentQuery<MessageResponse>(collectionUri, $"SELECT TOP 1 * FROM MessagesContainer c WHERE c.chatName = '{chatName.ToLower()}'").ToList();
+
+            return new OkObjectResult(response.Any());
+        }
+
+        private string CreateChatName() => Convert.ToBase64String(Guid.NewGuid().ToByteArray()).Substring(0, 4).ToLower();
 
     }
 }

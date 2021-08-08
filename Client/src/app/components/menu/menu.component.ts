@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { IChat } from 'src/app/data-models/signal-r.types';
+import { MessagingService } from 'src/app/services/messaging.service';
 
 @Component({
   selector: 'app-menu',
@@ -8,7 +10,7 @@ import { Router } from '@angular/router';
 })
 export class MenuComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private messagingService: MessagingService) { }
 
   joiningChat = false;
   joinGroupName = '';
@@ -17,26 +19,21 @@ export class MenuComponent implements OnInit {
   }
 
   createChat(): void {
-    const chatName = this.generateChatName();
-    this.router.navigate(['/chat/', chatName]);
+    this.messagingService.createGroup().subscribe((result: IChat) => {
+      this.router.navigate(['/chat/', result.chatName]);
+    });
   }
-  
+
+
   joinAGroup(): void {
     this.joiningChat = true;
   }
 
   joinChat(): void {
-    if(!this.joinGroupName.match(/^[a-z0-9]+$/i)) {
-      this.joinGroupName = ''
+    if (!this.joinGroupName.match(/^[a-z0-9]+$/i)) {
+      this.joinGroupName = '';
     } else {
-      this.router.navigate(['/chat/', this.joinGroupName]);
+      this.router.navigate(['/chat/', this.joinGroupName.toLocaleLowerCase()]);
     }
-    
-
-  }
-
-  generateChatName(): string {
-    //returns 3 character alphanumeric
-    return (Math.random().toString(36)+'00000000000000000').slice(2, 5)
   }
 }

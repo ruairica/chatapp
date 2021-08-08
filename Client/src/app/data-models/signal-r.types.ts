@@ -8,5 +8,9 @@ export interface IMessage {
     nickName: string;
     chatName?: string;
     messageTime?: Date;
-    timeStamp?: number; // can use this for the baseline when getting previous messages
+    timeStamp?: number;
+}
+
+export interface IChat {
+    chatName: string;
 }

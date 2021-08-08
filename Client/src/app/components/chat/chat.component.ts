@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Guid } from 'src/app/HelperClasses/guid';
+import { MessagingService } from 'src/app/services/messaging.service';
 import { IMessage } from '../../data-models/signal-r.types';
 import { SignalRService } from '../../services/signal-r.service';
 
@@ -19,29 +20,29 @@ export class ChatComponent implements OnInit {
   name: string;
   hasNickName = false;
 
-  constructor(private signalRService: SignalRService, private router: Router, private route: ActivatedRoute) {
+  constructor(private signalRService: SignalRService,
+              private router: Router,
+              private route: ActivatedRoute,
+              private messagingService: MessagingService) {
    }
 
   ngOnInit(): void {
-
-    this.groupName = this.route.snapshot.paramMap.get('chatName');
+    this.groupName = this.route.snapshot.paramMap.get('chatName').toLocaleLowerCase();
     this.nickName = localStorage.getItem(this.groupName ?? '');
-
     if (this.nickName) {
       this.hasNickName = true;
     }
 
-    if (this.groupName && this.hasNickName) {
-      this.joinSignalR(this.groupName);
-      this.allMessages = [];
-    }
-  }
-
-  private joinSignalR(groupName: string) {
-    this.signalRService.init(groupName);
-    this.signalRService.messages.subscribe(message => {
-      console.log(message);
-      this.allMessages.push(message);
+    this.messagingService.checkGroupExists(this.groupName).subscribe((result: boolean) => {
+      if (result === false)  {
+        this.router.navigate(['/chat']);
+      }
+      else {
+        if (this.groupName && this.hasNickName) {
+          this.joinSignalR(this.groupName);
+          this.loadMessages();
+        }
+      }
     });
   }
 
@@ -54,7 +55,7 @@ export class ChatComponent implements OnInit {
 
     if (this.groupName && this.hasNickName) {
       this.joinSignalR(this.groupName);
-      this.allMessages = [];
+      this.loadMessages();
     }
   }
 
@@ -68,9 +69,27 @@ export class ChatComponent implements OnInit {
 
     console.log(JSON.stringify(request));
     if (request.body && request.nickName) {
-      this.signalRService.send(request).subscribe(() => {
+      this.messagingService.send(request).subscribe(() => {
         this.message = '';
       });
     }
+  }
+
+  loadMessages(): void {
+    let earliestTimetamp: number;
+    if (this.allMessages.length > 0) {
+      earliestTimetamp = this.allMessages[0].timeStamp;
+    }
+    this.messagingService.getPastMessages(this.groupName, earliestTimetamp).subscribe((result: IMessage[]) => {
+      this.allMessages.unshift(...result);
+    });
+}
+
+  private joinSignalR(groupName: string) {
+    this.signalRService.init(groupName);
+    this.signalRService.messages.subscribe(message => {
+      console.log(message);
+      this.allMessages.push(message);
+    });
   }
 }

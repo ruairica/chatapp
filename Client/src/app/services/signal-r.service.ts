@@ -14,7 +14,6 @@ import { HttpHeaders } from '@angular/common/http';
 
 export class SignalRService {
 
-    // private readonly _http: HttpClient;
     private hubConnection: HubConnection;
     messages: Subject<IMessage> = new Subject();
     httpOptions = {};
@@ -57,11 +56,5 @@ export class SignalRService {
                 this.messages.next(data);
             });
         });
-    }
-
-    send(message: IMessage): Observable<void> {
-        const requestUrl = `${environment.baseUrl}/api/message`;
-        return this.http.post<void>(requestUrl, message, this.httpOptions);
-
     }
 }
