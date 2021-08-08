@@ -15,7 +15,7 @@ using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
 using System.Linq;
 
-namespace Api.Controllers    
+namespace Api.Controllers
 {
     public class Controller : ServerlessHub
     {
@@ -120,7 +120,15 @@ namespace Api.Controllers
             return new OkObjectResult(response.Any());
         }
 
-        private string CreateChatName() => Convert.ToBase64String(Guid.NewGuid().ToByteArray()).Substring(0, 4).ToLower();
+        private string CreateChatName()
+        {
+            var chatName = "1";
+            while (!char.IsLetter(chatName.First()))
+            {
+                chatName = Convert.ToBase64String(Guid.NewGuid().ToByteArray()).Substring(0, 4);
+            }
 
+            return chatName.ToLower();
+        }
     }
 }
