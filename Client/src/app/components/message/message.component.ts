@@ -13,8 +13,8 @@ export class MessageComponent implements OnInit {
   @Input() message: IMessage;
 
   ngOnInit(): void {
-    if(!this.message) {
-      this.message = { Name: 'Ruairi', Body: 'this is the body of the messageis the body of the messageis the body of the messageis the body of the message'};
+    if (!this.message) {
+      this.message = { nickName: 'Ruairi', body: 'this is the body of the messageis the body of the messageis the body of the messageis the body of the message'};
     }
   }
 

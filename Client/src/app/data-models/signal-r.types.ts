@@ -4,7 +4,13 @@ export interface ISignalRConnectionInfo {
 }
 
 export interface IMessage {
-    Body: string;
-    Name: string;
-    GroupName?: string;
+    body: string;
+    nickName: string;
+    chatName?: string;
+    messageTime?: Date;
+    timeStamp?: number;
+}
+
+export interface IChat {
+    chatName: string;
 }

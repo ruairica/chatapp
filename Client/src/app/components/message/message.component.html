@@ -1,6 +1,6 @@
 <div class="p-d-inline-flex p-jc-center message-container">
-    <div class="message-header">
-        {{ message.Name }}
+    <div *ngIf="message.nickName" class="message-header">
+        {{ message.nickName }}
     </div>
-    <div class="message-body">{{ message.Body}}</div>
+    <div class="message-body">{{ message.body}}</div>
 </div>
