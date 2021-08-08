@@ -24,7 +24,6 @@ export class MenuComponent implements OnInit {
     });
   }
 
-
   joinAGroup(): void {
     this.joiningChat = true;
   }
