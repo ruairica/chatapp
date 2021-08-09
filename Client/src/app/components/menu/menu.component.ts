@@ -14,12 +14,15 @@ export class MenuComponent implements OnInit {
 
   joiningChat = false;
   joinGroupName = '';
+  buttonsDisabled = false;
 
   ngOnInit(): void {
   }
 
   createChat(): void {
+    this.buttonsDisabled = true;
     this.messagingService.createGroup().subscribe((result: IChat) => {
+      this.buttonsDisabled = false;
       this.router.navigate(['/chat/', result.chatName]);
     });
   }
@@ -29,9 +32,12 @@ export class MenuComponent implements OnInit {
   }
 
   joinChat(): void {
+    this.buttonsDisabled = true;
     if (!this.joinGroupName.match(/^[a-z0-9]+$/i)) {
       this.joinGroupName = '';
+      this.buttonsDisabled = false;
     } else {
+      this.buttonsDisabled = false;
       this.router.navigate(['/chat/', this.joinGroupName.toLocaleLowerCase()]);
     }
   }

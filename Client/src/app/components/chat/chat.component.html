@@ -7,7 +7,7 @@
         <div *ngIf="hasNickName" class="body-text center-text p-mt-1">Chat name: {{ groupName }}</div>
     </div>
     <div class="body">
-        <div class="p-d-flex p-jc-center">
+        <div class="p-d-flex p-jc-center" [ngClass]="innerWidth > 768 ? 'scrollbar-padding' : ''">
             <div class="p-d-flex p-flex-column p-jc-center">
                 <h4 *ngIf="hasNickName" class="center-text">Hi {{ nickName}}</h4>
                 <div *ngIf="!hasNickName" class="p-mb-1 p-mt-6">
@@ -17,7 +17,9 @@
                 </div>
                 <div class="p-mt-6 p-d-inline-flex p-flex-column p-jc-center">
                     <div *ngFor="let item of this.allMessages">
-                        <app-message [message]="item"></app-message>
+                        <div>
+                            <app-message [message]="item"></app-message>
+                        </div>
                     </div>
                 </div>
                 <div class="bottomMessage"></div>

@@ -6,10 +6,10 @@
         </div>
         <div *ngIf="!joiningChat">
             <div>
-                <button pButton type="button" class="p-button-raised p-button-rounded home" label="Create a chat" (click)="createChat()"></button>
+                <button pButton type="button" class="p-button-raised p-button-rounded home" label="Create a chat" [disabled]="buttonsDisabled" (click)="createChat()"></button>
             </div>
             <div class="p-mt-6">
-                <button pButton type="button" class="p-button-raised p-button-rounded home" label="Join a chat" (click)="joinAGroup()"></button>
+                <button pButton type="button" class="p-button-raised p-button-rounded home" label="Join a chat" [disabled]="buttonsDisabled" (click)="joinAGroup()"></button>
             </div>
         </div>
         <div *ngIf="joiningChat">

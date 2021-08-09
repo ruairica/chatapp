@@ -1,42 +1,10 @@
 @import '../../HelperClasses/colors.scss';
 
-.message-header {
-    color: $black;
-    background-color: $yellow;
-    border-radius: 10px;
-    z-index: 10;
-    padding: 0.25rem 0.5rem;
-    min-width: 0.55rem;
-    position: absolute;
-    margin-top: -0.75rem;
-    font-weight: 600;
-}
-
-.message-container {
-    max-width: 11rem;
-    word-wrap: break-word;
-    border-radius: 5px;
-    color: $black;
-    background-color: $gray;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-}
-
-.message-body {
-    height: 100%;
-    width: 100%;
-    margin-top: 1.25rem;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-    padding-bottom: 0.5rem;
-    text-align: center;
-}
-
-.container {
+.container-message {
     margin-top: 1rem;
     margin-bottom: 0.75rem;
     position: relative;
-    max-width: 12rem;
+    max-width: 14rem;
     word-wrap: break-word;
     border-radius: 5px;
     color: $black;
@@ -46,6 +14,7 @@
     padding-bottom: 0.5rem;
     padding-top: 0.75rem;
     font-weight: 400;
+    display: inline-block
 }
 
 .header {

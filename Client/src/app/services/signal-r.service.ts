@@ -37,9 +37,8 @@ export class SignalRService {
             })
           };
 
-        console.log(`initializing SignalRService...`);
         this.getConnectionInfo(groupName).subscribe(info => {
-            console.log(`received info for endpoint ${info.url} access token: ${info.accessToken}`);
+
             const options = {
                 accessTokenFactory: () => info.accessToken
             };
@@ -52,7 +51,6 @@ export class SignalRService {
             this.hubConnection.start().catch(err => console.error(err.toString()));
 
             this.hubConnection.on('newMessage', (data: any) => {
-                console.log(data);
                 this.messages.next(data);
             });
         });

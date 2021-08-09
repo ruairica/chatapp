@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Guid } from 'src/app/HelperClasses/guid';
 import { MessagingService } from 'src/app/services/messaging.service';
@@ -19,6 +19,7 @@ export class ChatComponent implements OnInit {
   joinedChat = false;
   name: string;
   hasNickName = false;
+  innerWidth = window.innerWidth;
 
   constructor(private signalRService: SignalRService,
               private router: Router,
@@ -28,6 +29,7 @@ export class ChatComponent implements OnInit {
    }
 
   ngOnInit(): void {
+    this.innerWidth = window.innerWidth;
     this.groupName = this.route.snapshot.paramMap.get('chatName').toLocaleLowerCase();
     this.nickName = localStorage.getItem(this.groupName ?? '');
     if (this.nickName) {
@@ -47,6 +49,11 @@ export class ChatComponent implements OnInit {
     });
   }
 
+  @HostListener('window:resize', ['$event'])
+  onResize(): void {
+    this.innerWidth = window.innerWidth;
+  }
+
   confirmName() {
     if (this.name) {
       this.nickName = this.name;
@@ -61,14 +68,12 @@ export class ChatComponent implements OnInit {
   }
 
   sendMessage() {
-    console.log('in the send function in chat');
     const request: IMessage = {
       nickName: this.nickName,
       body: this.message,
       chatName: this.groupName
     };
 
-    console.log(JSON.stringify(request));
     if (request.body && request.nickName) {
       this.messagingService.send(request).subscribe(() => {
         this.message = '';
