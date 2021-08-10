@@ -114,7 +114,14 @@ namespace Api.Controllers
                 collectionName: "MessagesContainer",
                 ConnectionStringSetting = "CosmoDB_ConnectionString")] DocumentClient client)
         {
+            
             Uri collectionUri = UriFactory.CreateDocumentCollectionUri("Messages", "MessagesContainer");
+
+            // TODO: chat should only be active if its had a message in the last 24 hours, update UI so user knows this, and implement cron job to delete old chats.
+            // var twentyFourHoursAgo = DateTime.UtcNow.AddDays(-1).ToOADate();
+            // var response = client.CreateDocumentQuery<MessageResponse>(collectionUri, $"SELECT TOP 1 * FROM MessagesContainer c WHERE c.chatName = '{chatName.ToLower()}' AND c.timeStamp > {twentyFourHoursAgo}").ToList();
+
+
             var response = client.CreateDocumentQuery<MessageResponse>(collectionUri, $"SELECT TOP 1 * FROM MessagesContainer c WHERE c.chatName = '{chatName.ToLower()}'").ToList();
 
             return new OkObjectResult(response.Any());
