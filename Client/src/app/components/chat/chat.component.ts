@@ -40,12 +40,9 @@ export class ChatComponent implements OnInit {
       if (result === false)  {
         this.router.navigate(['/chat']);
       }
-      else {
-        if (this.groupName && this.hasNickName) {
-          this.joinSignalR(this.groupName);
-          this.loadMessages();
+      else if (this.groupName && this.hasNickName) {
+        this.startReceivingMessages();
         }
-      }
     });
   }
 
@@ -54,7 +51,7 @@ export class ChatComponent implements OnInit {
     this.innerWidth = window.innerWidth;
   }
 
-  confirmName() {
+  confirmName(): void {
     if (this.name) {
       this.nickName = this.name;
       localStorage.setItem(this.groupName, this.nickName);
@@ -62,9 +59,14 @@ export class ChatComponent implements OnInit {
     }
 
     if (this.groupName && this.hasNickName) {
-      this.joinSignalR(this.groupName);
-      this.loadMessages();
+      this.startReceivingMessages();
     }
+  }
+
+  startReceivingMessages(): void {
+    this.joinSignalR(this.groupName);
+    this.loadMessages();
+    this.addToRecentChats();
   }
 
   sendMessage() {
@@ -77,6 +79,7 @@ export class ChatComponent implements OnInit {
     if (request.body && request.nickName) {
       this.messagingService.send(request).subscribe(() => {
         this.message = '';
+        this.scrollToBottomMessage();
       });
     }
   }
@@ -99,7 +102,29 @@ export class ChatComponent implements OnInit {
     });
   }
 
-  scrollToBottomMessage() {
+  scrollToBottomMessage(): void {
     this.el.nativeElement.querySelector('.bottomMessage').scrollIntoView();
+  }
+
+  addToRecentChats() {
+    const storageItem = localStorage.getItem('recentChats');
+    const recentChats: string[] = storageItem === null ? [] : JSON.parse(storageItem);
+    const indexOfCurrentchat = recentChats.findIndex(x => x === this.groupName);
+
+    // current chat should become the most recent chat
+    // storing the names of the 3 most recent chats
+    if (indexOfCurrentchat === -1) {
+      if (recentChats.length >= 3) {
+        recentChats.pop();
+        recentChats.unshift(this.groupName);
+      }
+      recentChats.unshift(this.groupName);
+    }
+    else {
+      recentChats.unshift(recentChats[indexOfCurrentchat]);
+      recentChats.splice(indexOfCurrentchat + 1, 1);
+    }
+
+    localStorage.setItem('recentChats', JSON.stringify(recentChats));
   }
 }

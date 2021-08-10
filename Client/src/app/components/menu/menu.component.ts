@@ -16,6 +16,9 @@ export class MenuComponent implements OnInit {
   joinGroupName = '';
   buttonsDisabled = false;
 
+  array = ['one', 'two', 'three'];
+  stringed = JSON.stringify(this.array);
+
   ngOnInit(): void {
   }
 
@@ -39,6 +42,14 @@ export class MenuComponent implements OnInit {
     } else {
       this.buttonsDisabled = false;
       this.router.navigate(['/chat/', this.joinGroupName.toLocaleLowerCase()]);
+    }
+  }
+
+  fillRecentMessages(): void {
+    //have local storage array.
+    const recentChats: string[] = JSON.parse(localStorage.getItem('recentChats' ?? ''));
+    if (recentChats  && recentChats.length > 0) {
+      //this.messagingService
     }
   }
 }

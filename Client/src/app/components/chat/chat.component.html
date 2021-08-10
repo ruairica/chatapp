@@ -2,7 +2,7 @@
     <div class="header">
         <div class="p-d-flex p-jc-center p-mt-2">
             <button pButton type="button" class="p-mr-3 header-button" icon="pi pi-arrow-left" iconPos="left" label="Home" [routerLink]="'/chat'"></button>
-            <button pButton type="button" label="Load more" class="header-button" icon="pi pi-arrow-up" iconPos="right" (click)="scrollToBottomMessage()"></button>
+            <button pButton type="button" label="Load more" class="header-button" icon="pi pi-arrow-up" iconPos="right" (click)="loadMessages()"></button>
         </div>
         <div *ngIf="hasNickName" class="body-text center-text p-mt-1">Chat name: {{ groupName }}</div>
     </div>

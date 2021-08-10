@@ -33,4 +33,8 @@ export class MessagingService {
     }
     return this.http.get<IMessage[]>(requestUrl);
   }
+
+  /*fillRecentChats(chats: string[]): Observable<Map<string, IMessage>> {
+    //return this.http.get<Map<string, IMessage>>(requestUrl);
+  };*/
 }

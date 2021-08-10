@@ -81,6 +81,42 @@ namespace Api.Controllers
             return new OkObjectResult(messages);
         }
 
+        [FunctionName("FillRecentChats")]
+        public async Task<IActionResult> FillRecentChats(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "FillRecentChats")] HttpRequest req,
+        [CosmosDB(
+                databaseName: "Messages",
+                collectionName: "MessagesContainer",
+                ConnectionStringSetting = "CosmoDB_ConnectionString")] DocumentClient client)
+        {
+
+
+            //var chatNamesList = req.GetQueryParameterDictionary().Where(q => string.Compare(q.Key, "chatName", true) == 0).Select(q => q.Value).ToList();
+
+            var chatNamesList = req.Query["chatName"].ToList();
+
+            if (chatNamesList == null || chatNamesList.Count > 3 || !chatNamesList.Any())
+            {
+                return new BadRequestResult();
+            }
+
+            Uri collectionUri = UriFactory.CreateDocumentCollectionUri("Messages", "MessagesContainer");
+
+
+            var dict = chatNamesList.ToDictionary(key => key, value => new MessageResponse());
+
+
+            // TODO: refactor this to not do n queries
+            foreach(var key in dict.Keys.ToArray())
+            {
+                var query = $"SELECT TOP 1 * FROM MessagesContainer c WHERE c.chatName = '{key.ToLower()}' ORDER BY c.timeStamp DESC ";
+                var message = client.CreateDocumentQuery<MessageResponse>(collectionUri, query).ToList().FirstOrDefault();
+                dict[key] = message;
+            }
+
+            return new OkObjectResult(dict);
+        }
+
         [FunctionName("CreateGroup")]
         public async Task<IActionResult> CreateGroup(
         [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "CreateGroup")] HttpRequest req,
