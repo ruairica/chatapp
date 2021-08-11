@@ -9,13 +9,14 @@ import { ChatComponent } from './components/chat/chat.component';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
-//primeNG modules
+// primeNG modules
 import {InputTextModule} from 'primeng/inputtext';
 import {ButtonModule} from 'primeng/button';
 import { MessageComponent } from './components/message/message.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { MenuComponent } from './components/menu/menu.component';
+import {DividerModule} from 'primeng/divider';
 @NgModule({
   declarations: [AppComponent, ChatComponent, MessageComponent, MenuComponent],
   imports: [
@@ -23,6 +24,7 @@ import { MenuComponent } from './components/menu/menu.component';
     HttpClientModule,
     AppRoutingModule,
     InputTextModule,
+    DividerModule,
     ButtonModule,
     FormsModule,
     BrowserAnimationsModule,

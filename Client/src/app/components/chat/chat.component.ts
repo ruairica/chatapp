@@ -1,6 +1,5 @@
 import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Guid } from 'src/app/HelperClasses/guid';
 import { MessagingService } from 'src/app/services/messaging.service';
 import { IMessage } from '../../data-models/signal-r.types';
 import { SignalRService } from '../../services/signal-r.service';
@@ -108,15 +107,17 @@ export class ChatComponent implements OnInit {
 
   addToRecentChats() {
     const storageItem = localStorage.getItem('recentChats');
+    console.log(storageItem);
     const recentChats: string[] = storageItem === null ? [] : JSON.parse(storageItem);
+    console.log(recentChats);
     const indexOfCurrentchat = recentChats.findIndex(x => x === this.groupName);
+    console.log(indexOfCurrentchat);
 
     // current chat should become the most recent chat
     // storing the names of the 3 most recent chats
     if (indexOfCurrentchat === -1) {
       if (recentChats.length >= 3) {
         recentChats.pop();
-        recentChats.unshift(this.groupName);
       }
       recentChats.unshift(this.groupName);
     }

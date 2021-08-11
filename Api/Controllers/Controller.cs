@@ -3,16 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 using System.IO;
-using System.Text.Json;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using Api.DataModels;
 using Microsoft.Azure.Documents.Client;
-using Microsoft.Azure.Documents.Linq;
 using System.Linq;
 
 namespace Api.Controllers
@@ -24,7 +21,6 @@ namespace Api.Controllers
           [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "negotiate")] HttpRequest req,
           [SignalRConnectionInfo(HubName = "{headers.x-ms-signalr-group}")] SignalRConnectionInfo info)
         {
-            //possibly do the check if exists check here instead.
             return new OkObjectResult(info);
         }
 
@@ -90,12 +86,9 @@ namespace Api.Controllers
                 ConnectionStringSetting = "CosmoDB_ConnectionString")] DocumentClient client)
         {
 
+            var chatNames = req.Query["chatName"].ToList();
 
-            //var chatNamesList = req.GetQueryParameterDictionary().Where(q => string.Compare(q.Key, "chatName", true) == 0).Select(q => q.Value).ToList();
-
-            var chatNamesList = req.Query["chatName"].ToList();
-
-            if (chatNamesList == null || chatNamesList.Count > 3 || !chatNamesList.Any())
+            if (chatNames == null || chatNames.Count > 3 || !chatNames.Any())
             {
                 return new BadRequestResult();
             }
@@ -103,18 +96,16 @@ namespace Api.Controllers
             Uri collectionUri = UriFactory.CreateDocumentCollectionUri("Messages", "MessagesContainer");
 
 
-            var dict = chatNamesList.ToDictionary(key => key, value => new MessageResponse());
-
-
-            // TODO: refactor this to not do n queries
-            foreach(var key in dict.Keys.ToArray())
+            var response = new List<MessageResponse>();
+            // TODO: refactor this to not do 3 queries
+            foreach(var chatName in chatNames)
             {
-                var query = $"SELECT TOP 1 * FROM MessagesContainer c WHERE c.chatName = '{key.ToLower()}' ORDER BY c.timeStamp DESC ";
+                var query = $"SELECT TOP 1 * FROM MessagesContainer c WHERE c.chatName = '{chatName.ToLower()}' ORDER BY c.timeStamp DESC ";
                 var message = client.CreateDocumentQuery<MessageResponse>(collectionUri, query).ToList().FirstOrDefault();
-                dict[key] = message;
+                response.Add(message);
             }
 
-            return new OkObjectResult(dict);
+            return new OkObjectResult(response);
         }
 
         [FunctionName("CreateGroup")]
@@ -154,9 +145,9 @@ namespace Api.Controllers
             Uri collectionUri = UriFactory.CreateDocumentCollectionUri("Messages", "MessagesContainer");
 
             // TODO: chat should only be active if its had a message in the last 24 hours, update UI so user knows this, and implement cron job to delete old chats.
+            // Similarly FillRecentChats should have a 24 hour check aswell.
             // var twentyFourHoursAgo = DateTime.UtcNow.AddDays(-1).ToOADate();
             // var response = client.CreateDocumentQuery<MessageResponse>(collectionUri, $"SELECT TOP 1 * FROM MessagesContainer c WHERE c.chatName = '{chatName.ToLower()}' AND c.timeStamp > {twentyFourHoursAgo}").ToList();
-
 
             var response = client.CreateDocumentQuery<MessageResponse>(collectionUri, $"SELECT TOP 1 * FROM MessagesContainer c WHERE c.chatName = '{chatName.ToLower()}'").ToList();
 

@@ -20,7 +20,36 @@
 
 }
 
+.recent-chat:hover{
+    font-weight : 700;
+
+    strong {
+        font-weight : 700;
+    }
+}
+
+
 .menu-container {
     width: 13rem;
     text-align: center;
+}
+
+.recent-chat-block {
+    cursor: pointer;
+    font-weight: 400;
+    font-size: 1rem;
+
+    strong {
+        font-weight: 500;
+    }
+
+    a {
+        color: $black;
+        text-decoration: none;
+    }
+    
+    a:visited {
+        color: $black;
+        text-decoration: none;
+    }
 }

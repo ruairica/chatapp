@@ -34,7 +34,9 @@ export class MessagingService {
     return this.http.get<IMessage[]>(requestUrl);
   }
 
-  /*fillRecentChats(chats: string[]): Observable<Map<string, IMessage>> {
-    //return this.http.get<Map<string, IMessage>>(requestUrl);
-  };*/
+  fillRecentChats(chats: string[]): Observable<IMessage[]> {
+    let requestUrl = `${environment.baseUrl}/api/FillRecentChats?`;
+    chats.forEach(x => requestUrl += `chatName=${x}&`);
+    return this.http.get<IMessage[]>(requestUrl);
+  }
 }
