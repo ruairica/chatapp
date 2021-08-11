@@ -102,6 +102,12 @@ namespace Api.Controllers
             {
                 var query = $"SELECT TOP 1 * FROM MessagesContainer c WHERE c.chatName = '{chatName.ToLower()}' ORDER BY c.timeStamp DESC ";
                 var message = client.CreateDocumentQuery<MessageResponse>(collectionUri, query).ToList().FirstOrDefault();
+
+                if (message != default && message.Body.Length > 47)
+                {
+                    message.Body = message.Body.Substring(0, 47);
+                    message.Body += "...";
+                }
                 response.Add(message);
             }
 

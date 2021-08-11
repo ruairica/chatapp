@@ -16,8 +16,8 @@
             <div class="recent-chat-block" *ngFor="let recentChat of recentChats; let i = index">
                 <a [routerLink]="['/chat', recentChat.chatName]">
                     <div class="recent-chat">
-                        <div><strong>{{ recentChat.chatName }}</strong></div>
-                        <div>{{ recentChat.nickName }}: {{recentChat.body}}</div>
+                        <div class="p-mb-2"><strong>{{ recentChat.chatName }}</strong></div>
+                        <div>{{ recentChat.nickName }} : {{recentChat.body}}</div>
                         <p-divider *ngIf="i < 2"></p-divider>
                     </div>
                 </a>

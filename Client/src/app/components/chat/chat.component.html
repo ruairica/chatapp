@@ -13,7 +13,7 @@
                 <h4 *ngIf="hasNickName" class="center-text">Hi {{ nickName}}</h4>
                 <div *ngIf="!hasNickName" class="p-mb-1 p-mt-6">
                     <div class="p-mb-3 body-text center-text">Choose a nickname<br>(It's only for this group)</div>
-                    <input placeholder="Name..." type="text" class="name-input" pInputText (keydown.enter)="confirmName()" [(ngModel)]="name"/>
+                    <input placeholder="Name..." type="text"  maxlength="20" class="name-input" pInputText (keydown.enter)="confirmName()" [(ngModel)]="name"/>
                     <div class="p-mt-1"><button pButton type="button" class="p-button-raised p-button-rounded nameButton" label="Go" (click)="confirmName()"></button></div>
                 </div>
                 <div class="p-mt-6 p-d-inline-flex p-flex-column p-jc-center">
@@ -30,7 +30,7 @@
     <div class="footer">
         <div class="p-d-flex p-jc-center">
             <div *ngIf="hasNickName">
-                <div class="p-mb-1"><input type="text" (keydown.enter)="sendMessage()" pInputText [(ngModel)]="message"/></div>
+                <div class="p-mb-1"><input type="text" maxlength="500" (keydown.enter)="sendMessage()" pInputText [(ngModel)]="message"/></div>
                 <div class="p-mb-1"><button pButton type="button" class="p-button-raised p-button-rounded sendButton" label="Send" (click)="sendMessage()"></button></div>
             </div>
         </div>
