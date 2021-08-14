@@ -18,12 +18,20 @@ export class MenuComponent implements OnInit {
   hasRecentChats = false;
   recentChats: IMessage[] = [];
   alreadyInstalled = false;
+  deferredPrompt: any;
 
   ngOnInit(): void {
-    window.addEventListener('appinstalled', (evt) => {
-      this.alreadyInstalled = true;
-    });
     this.fillRecentMessages();
+  }
+
+  @HostListener('window:beforeinstallprompt', ['$event'])
+  onBeforeInstallPrompt(e) {
+  this.deferredPrompt = e;
+}
+
+  @HostListener('window:appinstalled', ['$event'])
+  appIsInstalled(e) {
+    this.alreadyInstalled = true;
   }
 
   createChat(): void {
@@ -66,29 +74,17 @@ export class MenuComponent implements OnInit {
       });
   }
 
-  deferredPrompt: any;
+  addToHomeScreen() {
+    if (!this.platform.IOS) {
+      this.deferredPrompt.prompt();
 
-  @HostListener('window:beforeinstallprompt', ['$event'])
-onbeforeinstallprompt(e) {
-  console.log(e);
-  // Prevent Chrome 67 and earlier from automatically showing the prompt
-  e.preventDefault();
-  // Stash the event so it can be triggered later.
-  this.deferredPrompt = e;
-}
-addToHomeScreen() {
-  // hide our user interface that shows our A2HS button
-  // Show the prompt
-  this.deferredPrompt.prompt();
-  // Wait for the user to respond to the prompt
-  this.deferredPrompt.userChoice
-  .then((choiceResult) => {
-  if (choiceResult.outcome === 'accepted') {
-    console.log('User accepted the A2HS prompt');
-  } else {
-    console.log('User dismissed the A2HS prompt');
+      this.deferredPrompt.userChoice
+        .then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            this.alreadyInstalled = true;
+          }
+          this.deferredPrompt = null;
+      });
+    }
   }
-  this.deferredPrompt = null;
-});
-}
 }
