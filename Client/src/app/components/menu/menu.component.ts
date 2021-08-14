@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IChat, IMessage } from 'src/app/data-models/signal-r.types';
 import { MessagingService } from 'src/app/services/messaging.service';
@@ -60,11 +60,35 @@ export class MenuComponent implements OnInit {
   }
 
   displayDownloadOption(): void {
-    if (this.platform.ANDROID) {
       window.addEventListener('beforeinstallprompt', (event: any) => {
         event.preventDefault();
         event.prompt();
       });
-    }
   }
+
+  deferredPrompt: any;
+
+  @HostListener('window:beforeinstallprompt', ['$event'])
+onbeforeinstallprompt(e) {
+  console.log(e);
+  // Prevent Chrome 67 and earlier from automatically showing the prompt
+  e.preventDefault();
+  // Stash the event so it can be triggered later.
+  this.deferredPrompt = e;
+}
+addToHomeScreen() {
+  // hide our user interface that shows our A2HS button
+  // Show the prompt
+  this.deferredPrompt.prompt();
+  // Wait for the user to respond to the prompt
+  this.deferredPrompt.userChoice
+  .then((choiceResult) => {
+  if (choiceResult.outcome === 'accepted') {
+    console.log('User accepted the A2HS prompt');
+  } else {
+    console.log('User dismissed the A2HS prompt');
+  }
+  this.deferredPrompt = null;
+});
+}
 }
