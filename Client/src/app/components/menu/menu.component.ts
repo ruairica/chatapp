@@ -17,21 +17,24 @@ export class MenuComponent implements OnInit {
   buttonsDisabled = false;
   hasRecentChats = false;
   recentChats: IMessage[] = [];
-  alreadyInstalled = false;
+  alreadyInstalled = true;
   deferredPrompt: any;
 
   ngOnInit(): void {
     this.fillRecentMessages();
+
+    // TODO: IOS functionality
+    if (this.platform.IOS) {
+      this.alreadyInstalled = false;
+    }
   }
 
   @HostListener('window:beforeinstallprompt', ['$event'])
   onBeforeInstallPrompt(e) {
+  // if this event is hit, the app is not installed so show button
+  this.alreadyInstalled = false;
   this.deferredPrompt = e;
-}
-
-  @HostListener('window:appinstalled', ['$event'])
-  appIsInstalled(e) {
-    this.alreadyInstalled = true;
+  console.log('before instlaled');
   }
 
   createChat(): void {
