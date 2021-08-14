@@ -40,6 +40,7 @@
     flex-shrink: 0;
 }
 
+// adds padding to keep the chat centred after scroll bar appears.
 .scrollbar-padding {
         padding-left: calc(100vw - 100%);
 }

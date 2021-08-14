@@ -1,5 +1,6 @@
 <div style="width: 100vw;" class="p-d-flex p-jc-center">
     <div class="p-d-flex p-flex-column p-jc-center menu-container">
+        <button pButton type="button" icon="pi pi-download" *ngIf="!alreadyInstalled" (click)="displayDownloadOption()"></button>
         <div>
             <h1>Fast chat</h1>
             <h3>quick, anonymous, disposable, group chats</h3>
