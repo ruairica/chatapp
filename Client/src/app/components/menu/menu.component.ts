@@ -3,6 +3,10 @@ import { Router } from '@angular/router';
 import { IChat, IMessage } from 'src/app/data-models/signal-r.types';
 import { MessagingService } from 'src/app/services/messaging.service';
 import { Platform } from '@angular/cdk/platform';
+import { timer } from 'rxjs';
+import { Subscription } from 'rxjs';
+ 
+
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
@@ -19,9 +23,19 @@ export class MenuComponent implements OnInit {
   recentChats: IMessage[] = [];
   alreadyInstalled = true;
   deferredPrompt: any;
+  isMobile = false;
+  downloadLabel = "Download the app"
+  private subscription: Subscription;
 
   ngOnInit(): void {
     this.fillRecentMessages();
+
+    let t = timer(1500);
+    this.subscription = t.subscribe(t => {
+      this.downloadLabel = '';
+    });
+
+    this.isMobile = (this.platform.IOS || this.platform.ANDROID);
 
     // TODO: IOS functionality
     if (this.platform.IOS) {
@@ -43,6 +57,11 @@ export class MenuComponent implements OnInit {
       this.buttonsDisabled = false;
       this.router.navigate(['/chat/', result.chatName]);
     });
+  }
+
+  undoJoiningChat(): void {
+    this.joiningChat = false;
+    this.joinGroupName = '';
   }
 
   joinAGroup(): void {
@@ -89,5 +108,9 @@ export class MenuComponent implements OnInit {
           this.deferredPrompt = null;
       });
     }
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }

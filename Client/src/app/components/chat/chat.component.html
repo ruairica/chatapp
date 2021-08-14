@@ -4,16 +4,21 @@
             <button pButton type="button" class="p-mr-6" icon="pi pi-home" [routerLink]="'/chat'"></button>
             <button pButton type="button" icon="pi pi-arrow-up" (click)="loadMessages()"></button>
             <button pButton type="button" class="p-ml-6" icon="pi pi-arrow-down" (click)="scrollToBottomMessage()"></button>
+            <button pButton type="button" class="p-ml-6" icon="pi pi-share-alt" (click)="copyShareLink($event)"></button>
         </div>
         <div *ngIf="hasNickName" class="body-text center-text p-mt-1">Chat name: {{ groupName }}</div>
     </div>
-    <div class="body">
+    <div (scroll)="onScroll($event)" class="body">
         <div class="p-d-flex p-jc-center" [ngClass]="innerWidth > 768 ? 'scrollbar-padding' : ''">
             <div class="p-d-flex p-flex-column p-jc-center">
                 <h4 *ngIf="hasNickName" class="center-text">Hi {{ nickName}}</h4>
                 <div *ngIf="!hasNickName" class="p-mb-1 p-mt-6">
-                    <div class="p-mb-3 body-text center-text">Choose a nickname<br>(It's only for this group)</div>
-                    <input placeholder="Name..." type="text"  maxlength="20" class="name-input" pInputText (keydown.enter)="confirmName()" [(ngModel)]="name"/>
+                    <div class="p-mb-5 body-text center-text">Choose your nickname<br>(It's only for this group)</div>
+
+                    <span class="p-float-label"> 
+                        <input type="text"  maxlength="20" id="nicknameInput" class="name-input" pInputText (keydown.enter)="confirmName()" [(ngModel)]="name"/>
+                        <label for="nicknameInput">Your nickname...</label>
+                    </span>
                     <div class="p-mt-1"><button pButton type="button" class="p-button-raised p-button-rounded nameButton" label="Go" (click)="confirmName()"></button></div>
                 </div>
                 <div class="p-mt-6 p-d-inline-flex p-flex-column p-jc-center">
@@ -36,3 +41,4 @@
         </div>
     </div>
   </div>
+  <p-confirmPopup></p-confirmPopup>

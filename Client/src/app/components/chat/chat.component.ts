@@ -1,14 +1,18 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessagingService } from 'src/app/services/messaging.service';
 import { IMessage } from '../../data-models/signal-r.types';
 import { SignalRService } from '../../services/signal-r.service';
+import { Clipboard } from '@angular/cdk/clipboard';
+import { ConfirmationService } from 'primeng/api';
+import { Subscription, timer } from 'rxjs';
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss']
 })
+
 export class ChatComponent implements OnInit {
 
   message: string;
@@ -19,12 +23,16 @@ export class ChatComponent implements OnInit {
   name: string;
   hasNickName = false;
   innerWidth = window.innerWidth;
+  private subscription: Subscription;
+  // https://stackoverflow.com/questions/40664766/how-to-detect-scroll-to-bottom-of-html-element
 
   constructor(private signalRService: SignalRService,
               private router: Router,
               private route: ActivatedRoute,
               private messagingService: MessagingService,
-              private el: ElementRef) {
+              private el: ElementRef,
+              private clipboard: Clipboard,
+              private confirmationService: ConfirmationService) {
    }
 
   ngOnInit(): void {
@@ -48,6 +56,22 @@ export class ChatComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(): void {
     this.innerWidth = window.innerWidth;
+  }
+
+  copyShareLink(event: Event): void {
+    this.clipboard.copy(`Join my chat! ${window.location.origin}${this.router.url}`);
+    this.confirmationService.confirm({
+      target: event.target,
+      message: 'Copied link!',
+      icon: 'pi pi-check-circle',
+      acceptVisible: false,
+      rejectVisible: false
+    });
+
+    let t = timer(500);
+    this.subscription = t.subscribe(t => {
+      this.confirmationService.close();
+    });
   }
 
   confirmName(): void {
@@ -90,8 +114,16 @@ export class ChatComponent implements OnInit {
     }
     this.messagingService.getPastMessages(this.groupName, earliestTimetamp).subscribe((result: IMessage[]) => {
       this.allMessages.unshift(...result);
+      //this.scrollToBottomMessage();
     });
-}
+  }
+
+  @HostListener('scroll', ['$event'])
+  onScroll(event: any){
+    if( event.target.scrollTop === 0) {
+      this.loadMessages();
+    }
+  }
 
   private joinSignalR(groupName: string) {
     this.signalRService.init(groupName);
@@ -127,5 +159,9 @@ export class ChatComponent implements OnInit {
     }
 
     localStorage.setItem('recentChats', JSON.stringify(recentChats));
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }
