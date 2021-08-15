@@ -124,8 +124,8 @@ namespace Api.Controllers
                 CreateIfNotExists = true)] IAsyncCollector<MessageRequest> documentOut)
         {
             var chatName = this.CreateChatName();
-            // TODO: Add validation to ensure group does not already exist.
 
+            // TODO: Add validation to ensure group does not already exist.
             var messageObject = new MessageRequest
             {
                 NickName = string.Empty,
