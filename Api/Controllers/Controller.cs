@@ -60,7 +60,7 @@ namespace Api.Controllers
         {
             Uri collectionUri = UriFactory.CreateDocumentCollectionUri("Messages", "MessagesContainer");
 
-            var query = $"SELECT TOP 5 * FROM MessagesContainer c WHERE c.chatName = '{chatName.ToLower()}' ";
+            var query = $"SELECT TOP 10 * FROM MessagesContainer c WHERE c.chatName = '{chatName.ToLower()}' ";
 
             if (double.TryParse(req.Query["timeStamp"], out var timestamp))
             {

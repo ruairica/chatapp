@@ -24,6 +24,9 @@ export class ChatComponent implements OnInit {
   hasNickName = false;
   innerWidth = window.innerWidth;
   private subscription: Subscription;
+  firstLoad = false;
+
+  //https://www.htmlgoodies.com/javascript/infinite-scrolling-the-angular-6-and-rxjs-way/
   // https://stackoverflow.com/questions/40664766/how-to-detect-scroll-to-bottom-of-html-element
 
   constructor(private signalRService: SignalRService,
@@ -114,15 +117,29 @@ export class ChatComponent implements OnInit {
     }
     this.messagingService.getPastMessages(this.groupName, earliestTimetamp).subscribe((result: IMessage[]) => {
       this.allMessages.unshift(...result);
-      //this.scrollToBottomMessage();
+      if (this.firstLoad = true) {
+        console.log('first load is true')
+        //need a small delay or it won't scroll
+        let t = timer(10);
+        this.subscription = t.subscribe(t => {
+          this.scrollToBottomMessage();
+          this.firstLoad = false;
+        });
+      }
     });
   }
 
   @HostListener('scroll', ['$event'])
   onScroll(event: any){
-    if( event.target.scrollTop === 0) {
+    console.log(event.target.scrollTop);
+    console.log(event.target.offsetHeight);
+    console.log(event.target.scrollHeight);
+    if ((event.target.scrollTop / event.target.scrollHeight) < 0.25) {
       this.loadMessages();
+      console.log('triggered')
     }
+    console.log('---------');
+
   }
 
   private joinSignalR(groupName: string) {
@@ -161,7 +178,7 @@ export class ChatComponent implements OnInit {
     localStorage.setItem('recentChats', JSON.stringify(recentChats));
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 }
