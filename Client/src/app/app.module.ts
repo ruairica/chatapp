@@ -21,11 +21,12 @@ import {TooltipModule} from 'primeng/tooltip';
 import {ConfirmPopupModule} from 'primeng/confirmpopup';
 import { ConfirmationService } from 'primeng/api';
 import { ScrollTrackerDirective } from './scroll-tracker.directive';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 
 @NgModule({
   declarations: [AppComponent, ChatComponent, MessageComponent, MenuComponent, ScrollTrackerDirective],
-  exports: [ScrollTrackerDirective],
+  exports: [ScrollTrackerDirective, InfiniteScrollModule],
   imports: [
     BrowserModule,
     ConfirmPopupModule,
@@ -35,6 +36,7 @@ import { ScrollTrackerDirective } from './scroll-tracker.directive';
     DividerModule,
     ButtonModule,
     FormsModule,
+    InfiniteScrollModule,
     TooltipModule,
     BrowserAnimationsModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
