@@ -60,7 +60,7 @@ namespace Api.Controllers
         {
             Uri collectionUri = UriFactory.CreateDocumentCollectionUri("Messages", "MessagesContainer");
 
-            var query = $"SELECT TOP 5 * FROM MessagesContainer c WHERE c.chatName = '{chatName.ToLower()}' ";
+            var query = $"SELECT TOP 10 * FROM MessagesContainer c WHERE c.chatName = '{chatName.ToLower()}' ";
 
             if (double.TryParse(req.Query["timeStamp"], out var timestamp))
             {
@@ -103,9 +103,9 @@ namespace Api.Controllers
                 var query = $"SELECT TOP 1 * FROM MessagesContainer c WHERE c.chatName = '{chatName.ToLower()}' ORDER BY c.timeStamp DESC ";
                 var message = client.CreateDocumentQuery<MessageResponse>(collectionUri, query).ToList().FirstOrDefault();
 
-                if (message != default && message.Body.Length > 47)
+                if (message != default && message.Body.Length > 27)
                 {
-                    message.Body = message.Body.Substring(0, 47);
+                    message.Body = message.Body.Substring(0, 27);
                     message.Body += "...";
                 }
                 response.Add(message);
@@ -124,8 +124,8 @@ namespace Api.Controllers
                 CreateIfNotExists = true)] IAsyncCollector<MessageRequest> documentOut)
         {
             var chatName = this.CreateChatName();
-            // TODO: Add validation to ensure group does not already exist.
 
+            // TODO: Add validation to ensure group does not already exist.
             var messageObject = new MessageRequest
             {
                 NickName = string.Empty,

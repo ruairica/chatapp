@@ -18,6 +18,10 @@
         border-radius: 8px;
     }
 
+    .p-button.p-button-outlined {
+        color: $blue;
+    }
+
 }
 
 .recent-chat:hover{
@@ -26,6 +30,21 @@
     strong {
         font-weight : 700;
     }
+}
+
+.sub-title { 
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #4a5463;
+}
+
+.title { 
+    font-weight: 700;
+    font-size: 2rem;
+    color: $black;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+
 }
 
 

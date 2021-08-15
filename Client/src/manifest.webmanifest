@@ -6,6 +6,10 @@
   "display": "standalone",
   "scope": "./",
   "start_url": "./",
+  "related_applications": [{
+    "platform": "webapp",
+    "url": "https://proud-sea-06af16403.azurestaticapps.net/manifest.json"
+  }],
   "icons": [
     {
       "src": "assets/icons/icon-72x72.png",

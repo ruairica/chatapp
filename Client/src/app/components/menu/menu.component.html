@@ -1,10 +1,11 @@
 <div style="width: 100vw;" class="p-d-flex p-jc-center">
     <div class="p-d-flex p-flex-column p-jc-center menu-container">
+        <button pButton type="button" pTooltip="Download the app on this device" [label]="downloadLabel" tooltipPosition="right" class="p-mt-2 p-button-rounded p-button-outlined" icon="{{ isMobile ? 'pi pi-mobile' : 'pi pi-desktop'}}" *ngIf="true" (click)="addToHomeScreen()"></button>
         <div>
-            <h1>Fast chat</h1>
-            <h3>quick, anonymous, disposable, group chats</h3>
+            <div class="title">Fast chat</div>
+            <div class="sub-title">quick, anonymous, disposable, group chats</div>
         </div>
-        <div *ngIf="!joiningChat">
+        <div class="p-mt-3" *ngIf="!joiningChat">
             <div>
                 <button pButton type="button" class="p-button-raised p-button-rounded home" label="Create a chat" [disabled]="buttonsDisabled" (click)="createChat()"></button>
             </div>
@@ -12,7 +13,7 @@
                 <button pButton type="button" class="p-button-raised p-button-rounded home" label="Join a chat" [disabled]="buttonsDisabled" (click)="joinAGroup()"></button>
             </div>
         </div>
-        <div class="p-mt-5" *ngIf="hasRecentChats && !joiningChat">
+        <div class="p-mt-4" *ngIf="hasRecentChats && !joiningChat">
             <div class="recent-chat-block" *ngFor="let recentChat of recentChats; let i = index">
                 <a [routerLink]="['/chat', recentChat.chatName]">
                     <div class="recent-chat">
@@ -24,9 +25,17 @@
             </div>
         </div>
         <div *ngIf="joiningChat">
-            <div class="p-mb-3 body-text center-text">Enter the chat name</div>
-            <input placeholder="Name..." type="text" class="joinChat-input" pInputText (keydown.enter)="joinChat()" [(ngModel)]="joinGroupName"/>
-            <div class="p-mt-1"><button pButton type="button" class="p-button-raised p-button-rounded joinChatButton" label="Join" (click)="joinChat()"></button></div>
+            <div class="p-d-flex p-jc-end">
+                <div>                
+                    <button pButton type="button" icon="pi pi-undo" class="p-button-rounded p-button-text" (click)="undoJoiningChat()"></button>
+                </div>
+            </div>
+            <div class="p-mb-5 body-text center-text">Enter the chat name</div>
+            <span class="p-float-label"> 
+                <input type="text" id="inputJoinChat" class="joinChat-input" pInputText (keydown.enter)="joinChat()" [(ngModel)]="joinGroupName"/>
+                <label for="inputJoinChat">Chat name...</label>
+            </span>
+            <div class="p-mt-2"><button pButton type="button" class="p-button-raised p-button-rounded joinChatButton" label="Join" (click)="joinChat()"></button></div>
         </div>
     </div>
 </div>

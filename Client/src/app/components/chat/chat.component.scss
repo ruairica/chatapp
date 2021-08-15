@@ -2,6 +2,9 @@
 
 :host ::ng-deep {
 
+    .p-confirm-popup .p-confirm-popup-message {
+        margin-left: 0 !important;
+    }
     .p-button.sendButton {
         width: 12rem;
         background-color: $blue;
@@ -33,13 +36,14 @@
 
 .body{
     flex-grow: 1;
-    overflow: auto;
+    overflow-y: scroll;
     min-height: 2em;
 }
 .footer{
     flex-shrink: 0;
 }
 
+// adds padding to keep the chat centred after scroll bar appears.
 .scrollbar-padding {
         padding-left: calc(100vw - 100%);
 }
