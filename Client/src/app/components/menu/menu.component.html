@@ -3,7 +3,7 @@
         <button pButton type="button" pTooltip="Download the app on this device" [label]="downloadLabel" tooltipPosition="right" class="p-mt-2 p-button-rounded p-button-outlined" icon="{{ isMobile ? 'pi pi-mobile' : 'pi pi-desktop'}}" *ngIf="true" (click)="addToHomeScreen()"></button>
         <div>
             <div class="title">Fast chat</div>
-            <div class="sub-title">quick, anonymous, disposable, group chats</div>
+            <div class="sub-title">quick, anonymous, disposable, group chats {{emoji}}</div>
         </div>
         <div class="p-mt-3" *ngIf="!joiningChat">
             <div>

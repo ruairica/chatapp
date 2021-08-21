@@ -26,12 +26,11 @@ export class MenuComponent implements OnInit {
   isMobile = false;
   downloadLabel = "Download the app"
   private subscription: Subscription;
-  utc: any;
+  emoji: any;
 
   ngOnInit(): void {
+    this.emoji = String.fromCodePoint(0x1F354);
     this.fillRecentMessages();
-
-    this.utc  = Math.floor((new Date()).getTime() / 1000);
     let t = timer(1500);
     this.subscription = t.subscribe(t => {
       this.downloadLabel = '';
