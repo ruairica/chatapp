@@ -25,7 +25,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   private subscription1: Subscription;
   private subscription2: Subscription;
 
-  throttle = 300;
+  throttle = 100;
   scrollUpDistance = 3;
 
   constructor(private signalRService: SignalRService,
@@ -146,7 +146,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     const indexOfCurrentchat = recentChats.findIndex(x => x === this.groupName);
 
     // storing the names of the 3 most recent chats
-    // current chat should become the most recent chat
+    // current chat should become the most recent chat (first in array)
     if (indexOfCurrentchat === -1) {
       if (recentChats.length >= 3) {
         recentChats.pop();
@@ -162,7 +162,12 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription1.unsubscribe();
-    this.subscription2.unsubscribe();
+    if (this.subscription1) {
+      this.subscription1.unsubscribe();
+    }
+
+    if (this.subscription2) {
+      this.subscription2.unsubscribe();
+    }
   }
 }

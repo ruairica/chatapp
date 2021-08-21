@@ -11,5 +11,11 @@ namespace Api.Repositories
         Task<Chat> CreateNewChat();
 
         bool ChatExists(string chatName);
+
+        Task<List<MessageResponse>> MessageSummaries(List<string> chatNames);
+
+        Task<List<MessageResponse>> GetMessages(string chatName, double timeStamp);
+
+        Task AddMessage(MessageRequest messageRequest);
     }
 }

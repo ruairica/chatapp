@@ -26,10 +26,12 @@ export class MenuComponent implements OnInit {
   isMobile = false;
   downloadLabel = "Download the app"
   private subscription: Subscription;
+  utc: any;
 
   ngOnInit(): void {
     this.fillRecentMessages();
 
+    this.utc  = Math.floor((new Date()).getTime() / 1000);
     let t = timer(1500);
     this.subscription = t.subscribe(t => {
       this.downloadLabel = '';
@@ -80,11 +82,15 @@ export class MenuComponent implements OnInit {
   }
 
   fillRecentMessages(): void {
-    const recentChatNames: string[] = JSON.parse(localStorage.getItem('recentChats' ?? ''));
+    let recentChatNames: string[] = JSON.parse(localStorage.getItem('recentChats' ?? ''));
     if (recentChatNames  && recentChatNames.length > 0) {
       this.messagingService.fillRecentChats(recentChatNames).subscribe((result: IMessage[]) => {
         this.recentChats = result;
         this.hasRecentChats  = true;
+
+        //removing any chats that are now invalid (>24hours since the last message)
+        recentChatNames = result.map(x => x.chatName);
+        localStorage.setItem('recentChats', JSON.stringify(recentChatNames));
       });
     }
   }
