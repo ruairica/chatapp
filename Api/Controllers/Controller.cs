@@ -11,11 +11,19 @@ using System.Collections.Generic;
 using Api.DataModels;
 using Microsoft.Azure.Documents.Client;
 using System.Linq;
+using Api.Repositories;
 
 namespace Api.Controllers
 {
     public class Controller : ServerlessHub
     {
+        private readonly IMessageRepository messageRepository;
+
+        public Controller(IMessageRepository messageRepository)
+        {
+            this.messageRepository = messageRepository;
+        }
+
         [FunctionName("negotiate")]
         public async Task<IActionResult> GetSignalRInfo(
           [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "negotiate")] HttpRequest req,
@@ -114,7 +122,7 @@ namespace Api.Controllers
             return new OkObjectResult(response);
         }
 
-        [FunctionName("CreateGroup")]
+        /*[FunctionName("CreateGroup")]
         public async Task<IActionResult> CreateGroup(
         [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "CreateGroup")] HttpRequest req,
         [CosmosDB(
@@ -136,9 +144,17 @@ namespace Api.Controllers
             await documentOut.AddAsync(messageObject);
 
             return new OkObjectResult(new Chat { ChatName = chatName });
+        }*/
+        [FunctionName("CreateGroup")]
+        public async Task<IActionResult> CreateGroup(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "CreateGroup")] HttpRequest req)
+        {
+            var chat = await this.messageRepository.CreateNewChat();     
+
+            return new OkObjectResult(chat);
         }
 
-        [FunctionName("ChatExists")]
+        /*[FunctionName("ChatExists")]
         public async Task<IActionResult> ChatExists(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "ChatExists/{chatName}")] HttpRequest req,
         string chatName,
@@ -158,6 +174,16 @@ namespace Api.Controllers
             var response = client.CreateDocumentQuery<MessageResponse>(collectionUri, $"SELECT TOP 1 * FROM MessagesContainer c WHERE c.chatName = '{chatName.ToLower()}'").ToList();
 
             return new OkObjectResult(response.Any());
+        }*/
+
+        [FunctionName("ChatExists")]
+        public async Task<IActionResult> ChatExists(
+       [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "ChatExists/{chatName}")] HttpRequest req,
+       string chatName)
+        {
+            var response = this.messageRepository.ChatExists(chatName);
+
+            return new OkObjectResult(response);
         }
 
         private string CreateChatName()
