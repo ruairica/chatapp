@@ -2,7 +2,6 @@
     <div class="header">
         <div class="p-d-flex p-jc-center p-mt-2">
             <button pButton type="button" class="p-mr-6" icon="pi pi-home" [routerLink]="'/chat'"></button>
-            <button pButton type="button" pTooltip="Scroll to the bottom" tooltipPosition="bottom" icon="pi pi-arrow-down" (click)="scrollToBottomMessage()"></button>
             <button pButton type="button" class="p-ml-6" icon="pi pi-share-alt" (click)="copyShareLink($event)"></button>
         </div>
         <div *ngIf="hasNickName" class="body-text center-text p-mt-1">Chat name: {{ groupName }}</div>
@@ -17,19 +16,17 @@
             <div class="p-d-flex p-flex-column p-jc-center">
                 <h4 *ngIf="hasNickName" class="center-text">Hi {{ nickName}}</h4>
                 <div *ngIf="!hasNickName" class="p-mb-1 p-mt-6">
-                    <div class="p-mb-5 body-text center-text">Choose your nickname<br>(It's only for this group)</div>
-
-                    <span class="p-float-label"> 
-                        <input type="text"  maxlength="20" id="nicknameInput" class="name-input" pInputText (keydown.enter)="confirmName()" [(ngModel)]="name"/>
+                    <div class="p-mb-6 body-text center-text">Choose your nickname<br>(It's only for this group)</div>
+                    <span class="p-float-label p-mt-2"> 
+                        <input type="text"  maxlength="12" id="nicknameInput" class="name-input" pInputText (keydown.enter)="confirmName()" [(ngModel)]="name"/>
                         <label for="nicknameInput">Your nickname...</label>
                     </span>
-                    <div class="p-mt-1"><button pButton type="button" class="p-button-raised p-button-rounded nameButton" label="Go" (click)="confirmName()"></button></div>
+                    <div class="p-mt-2"><button pButton type="button" class="p-button-raised p-button-rounded nameButton" label="Go" (click)="confirmName()"></button></div>
+                    <div class="p-mt-5 reminder center-text">Groups are deleted if no messages have been sent for a 24 hours period</div>
                 </div>
                 <div class="p-mt-6 p-d-inline-flex p-flex-column p-jc-center"       >
-                    <div *ngFor="let item of this.allMessages">
-                        <div>
-                            <app-message [message]="item"></app-message>
-                        </div>
+                    <div class="p-d-inline-flex p-jc-center" *ngFor="let item of this.allMessages">
+                        <app-message [message]="item"></app-message>
                     </div>
                 </div>
                 <div class="bottomMessage"></div>
