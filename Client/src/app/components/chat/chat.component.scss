@@ -34,6 +34,13 @@
     flex-shrink: 0;
 }
 
+.reminder {
+    font-size: 0.875rem;
+    color: $navy;
+    font-weight: 600;
+    width: 13rem;
+}
+
 .body{
     flex-grow: 1;
     overflow-y: scroll;
