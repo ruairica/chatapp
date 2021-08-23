@@ -2,9 +2,11 @@
 
 namespace Api.DataModels
 {
-    class Chat
+    public class Chat
     {
         [JsonProperty("chatName")]
         public string ChatName { get; set; }
+
+        //TODO: Add chat Id
     }
 }

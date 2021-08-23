@@ -5,16 +5,19 @@
     margin-bottom: 0.75rem;
     position: relative;
     max-width: 14rem;
-    word-wrap: break-word;
     border-radius: 5px;
-    color: $black;
     background-color: $gray;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
     padding-bottom: 0.5rem;
     padding-top: 0.75rem;
-    font-weight: 400;
     display: inline-block
+}
+
+.message-text {
+    font-weight: 400; 
+    color: $black;  
+    word-wrap: break-word;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
 }
 
 .header {
@@ -24,8 +27,9 @@
     border-radius: 10px;
     z-index: 10;
     font-weight: 600;
-    margin-top: -2rem;
+    left: 50%;
+    transform: translate(-50%);
+    margin-top: -1.75rem;
     padding: 0.25rem 0.5rem;
     white-space: nowrap;
-    
 }

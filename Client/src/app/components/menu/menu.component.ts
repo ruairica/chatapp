@@ -25,11 +25,11 @@ export class MenuComponent implements OnInit {
   deferredPrompt: any;
   isMobile = false;
   downloadLabel = "Download the app"
+  showError = false;
   private subscription: Subscription;
 
   ngOnInit(): void {
     this.fillRecentMessages();
-
     let t = timer(1500);
     this.subscription = t.subscribe(t => {
       this.downloadLabel = '';
@@ -44,11 +44,10 @@ export class MenuComponent implements OnInit {
   }
 
   @HostListener('window:beforeinstallprompt', ['$event'])
-  onBeforeInstallPrompt(e) {
+  onBeforeInstallPrompt(e: any): void  {
   // if this event is hit, the app is not installed so show button
   this.alreadyInstalled = false;
   this.deferredPrompt = e;
-  console.log('before instlaled');
   }
 
   createChat(): void {
@@ -68,23 +67,39 @@ export class MenuComponent implements OnInit {
     this.joiningChat = true;
   }
 
+  hideErrorMessage(): void {
+    this.showError = false;
+  }
+
   joinChat(): void {
     this.buttonsDisabled = true;
-    if (this.joinGroupName && this.joinGroupName.length === 4) {
-      this.buttonsDisabled = false;
-      this.router.navigate(['/chat/', this.joinGroupName.toLocaleLowerCase()]);
-    } else {
+    if (!this.joinGroupName && this.joinGroupName.length !== 4) {
       this.joinGroupName = '';
       this.buttonsDisabled = false;
+      this.showError = true;
+    } else {
+      this.messagingService.checkGroupExists(this.joinGroupName).subscribe((result: boolean) => {
+        if (result) {
+          this.router.navigate(['/chat/', this.joinGroupName.toLocaleLowerCase()]);
+        } else {
+          this.joinGroupName = '';
+          this.showError = true;
+        }
+        this.buttonsDisabled = false;
+      })
     }
   }
 
   fillRecentMessages(): void {
-    const recentChatNames: string[] = JSON.parse(localStorage.getItem('recentChats' ?? ''));
+    let recentChatNames: string[] = JSON.parse(localStorage.getItem('recentChats' ?? ''));
     if (recentChatNames  && recentChatNames.length > 0) {
       this.messagingService.fillRecentChats(recentChatNames).subscribe((result: IMessage[]) => {
         this.recentChats = result;
         this.hasRecentChats  = true;
+
+        //removing any chats that are now invalid (>24hours since the last message)
+        recentChatNames = result.map(x => x.chatName);
+        localStorage.setItem('recentChats', JSON.stringify(recentChatNames));
       });
     }
   }
