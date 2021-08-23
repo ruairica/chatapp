@@ -1,9 +1,16 @@
 # Instant Messaging Web Application 
 
-Instant messaging web application w/o authentication.
-* hosted as an azure static web applcation (Typescript Angular front end and C# .NET Core (serverless) back end)
-* using SignalR for instant messaging
-* storing messages in Azure CosmosDB
-* downloadable on any platform as a progressive web app (PWA)
+
+An instant messaging web app.  
+No authentication (anything persisted eg recent chat names is saved in local storage)
 
 Available @ https://proud-sea-06af16403.azurestaticapps.net/chat
+
+Deployed as an azure static web app and built using
+* Typescript, Angular
+* C#, .NET Core
+* Serverless (Azure Functions)
+* Websockets (SignalR)
+* NoSQL Database (Cosmos DB)
+
+downloadable on any platform as a progressive web app (WIP)
